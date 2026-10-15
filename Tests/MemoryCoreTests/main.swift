@@ -62,6 +62,11 @@ try check(GroundedAssistant.validate(.init(supported: true, quotes: [.init(passa
 try check(GroundedAssistant.validate(.init(supported: true, quotes: [.init(passageID: "invented", text: quote.text)]), passages: passages).abstained, "Reject fabricated citation")
 try check(GroundedAssistant.validate(.init(supported: false, quotes: [quote]), passages: passages).abstained, "Honor unsupported result")
 try check(GroundedAssistant.validate(.init(supported: true, quotes: []), passages: passages).abstained, "Reject unsupported assertion")
+let wrapped = Memory(title: "OCR", source: "Synthetic", text: "Project Zorvia uses a\n17-day revision cycle.")
+let wrappedPassages = Retrieval.search("Zorvia revision", in: [wrapped])
+let wrappedResult = GroundedAssistant.validate(.init(supported: true, quotes: [.init(passageID: wrappedPassages[0].id, text: quote.text)]), passages: wrappedPassages)
+try check(wrappedResult.citations.first?.quote == wrapped.text, "Accept whitespace-only changes and display original source")
+try check(GroundedAssistant.validate(.init(supported: true, quotes: [.init(passageID: wrappedPassages[0].id, text: "Project Zorvia uses a 18-day revision cycle.")]), passages: wrappedPassages).abstained, "Whitespace handling must not accept altered facts")
 print("PASS: storage, legacy migration, image round trip/deletion, retrieval, long-note chunks, exact quotes and fabricated-evidence rejection")
 
 if CommandLine.arguments.contains("--live") {

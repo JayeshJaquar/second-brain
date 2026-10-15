@@ -11,7 +11,7 @@ A local macOS learning-memory prototype: capture selected windows, preserve scre
 - Existing text-only memories remain readable. Data stays in the user's Application Support directory, outside the repository.
 - **Ask memories** searches all saved text by default. Selecting a memory is optional; a toggle restricts the scope when useful.
 - BM25-style keyword retrieval over overlapping chunks, including content beyond the old 6,000-character cutoff. Up to four candidate passages go to the local model.
-- **Strict evidence mode:** the model selects quotes using a JSON schema. The app verifies exact quote membership and source IDs, rejects invalid evidence, and attaches clickable citations itself. It displays verified excerpts rather than unrestricted generated explanations.
+- **Strict evidence mode:** the model selects quotes using a JSON schema. The app verifies quote membership and source IDs (allowing only whitespace differences from OCR wrapping, then displaying the original source), rejects invalid evidence, and attaches clickable citations itself. It displays verified excerpts rather than unrestricted generated explanations.
 - Conservative instruction-override screening excludes suspicious memories before retrieval; it can also exclude legitimate prompt-security material and is not a complete injection detector.
 - No matching evidence means an abstention. No fallback to cloud AI or general pretrained answers.
 - Saved screenshots can be viewed in the Saved memory tab. Deleting a memory removes its embedded screenshot from the active store.
@@ -65,7 +65,7 @@ With local Ollama running, test the actual app's retrieval/client/validator usin
 .build/release/MemoryChecks --live
 ```
 
-Live tests include invented facts with/without memory, related questions with missing answers, a deliberately fictional fact that contradicts common model knowledge, and source prompt injection. They never load your personal store. See [test results](test-results/) for observed outcomes; a small smoke suite is not a comprehensive safety or quality benchmark.
+Live model checks can fail on false abstentions even when offline tests pass; observed runs and unresolved limitations are recorded in the report. Live tests include invented facts with/without memory, related questions with missing answers, a deliberately fictional fact that contradicts common model knowledge, and source prompt injection. They never load your personal store. See [test results](test-results/) for observed outcomes; a small smoke suite is not a comprehensive safety or quality benchmark.
 
 ## Layout
 

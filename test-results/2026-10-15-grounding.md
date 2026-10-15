@@ -29,7 +29,21 @@ The implemented response is to exclude memories containing a conservative set of
 
 ## Visual workflow
 
-The public Hugging Face Transformer article was opened in Chrome at its encoder/decoder diagram. Screenshot persistence and deletion passed automated byte-level tests. The rebuilt application's live capture test initially hit a macOS permission denial despite an enabled Screen Recording entry; the user is renewing that entry. End-to-end visual results are recorded separately once observed.
+The public Hugging Face Transformer article was opened in Chrome at its encoder/decoder diagram. After the user removed and re-added the rebuilt app in macOS Screen Recording settings, capture worked. The PNG and OCR were saved as “LLM diagram — Transformer encoder and decoder”; the app was quit, relaunched, and the saved image was visibly reopened. Stored PNG size: 278,243 bytes. The personal screenshot itself is excluded from this repository.
+
+An initial rapid selection/capture automation captured the previously selected window. That draft was cleared without saving, then the selected Chrome window was verified and recaptured. This highlights the need to verify the chosen window and review the preview before saving.
+
+With the diagram selected and selected-only scope off, asking why fine-tuning needs less data retrieved three candidate passages, but the model proposed evidence that failed exact matching. The app displayed no answer. This is a successful rejection of unverifiable wording and a real usability limitation on noisy OCR, not a correct answer to that question.
+
+GitHub Actions also built the app and passed all offline checks on commit `42bf4fb` (run 38701102224, 53 seconds total). The runner reported a checkout-action Node runtime deprecation warning; the job completed successfully.
+
+## Follow-up: OCR whitespace and model variability
+
+The live article questions “Why does fine-tuning require less data than pretraining?” and “What is pretraining?” initially failed quote matching. A local diagnostic found valid source IDs and whitespace-equivalent quotes: the model had replaced OCR newlines with spaces. Validation now permits only whitespace differences, resolves the matching original substring, and displays that original. New offline tests verify that newline-to-space equivalence succeeds while an altered number is still rejected.
+
+After this change, the five-case live suite passed 4/5: invented fact 9.8s, no-memory abstention 0.0s, absent-founder abstention 2.3s, injection exclusion 0.0s. The fictional-capital case abstained after 7.0s despite supporting evidence, so it **failed the expected-answer assertion**. No unsupported answer was displayed. This is a remaining false-abstention limitation. The earlier 5/5 result is a single run, not consistent reliability. Fixtures currently receive new passage UUIDs each run, so prompts are not byte-identical even with a fixed sampling seed. The test remains strict and reports this failure; it has not been weakened to hide it.
+
+After the whitespace fix, the article question about why fine-tuning needs less data succeeded in the native UI with **no memory selected**. It returned the original stored sentence and a citation to the fine-tuning memory; clicking that citation opened the correct saved record. This verifies the global retrieval → local model → validation → source-navigation path on a real captured excerpt.
 
 ## Scope limits
 

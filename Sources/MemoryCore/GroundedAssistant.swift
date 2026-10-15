@@ -31,6 +31,16 @@ public enum GroundedAssistant {
     public static let model = "qwen2.5:7b-instruct"
     public static let unavailable = "I couldn’t find enough supported text in the searched memories to answer. Try naming the topic, capturing more content, or adding a note. Images are stored for viewing; their visual relationships are not interpreted by this text-only model."
 
+    private static func verifiedQuote(_ proposed: String, in source: String) -> String? {
+        if source.contains(proposed) { return proposed }
+        // OCR wraps lines; a model often replaces those newlines with spaces. Permit only
+        // whitespace differences and always display the original source substring.
+        let words = proposed.split(whereSeparator: { $0.isWhitespace }).map(String.init)
+        let pattern = words.map(NSRegularExpression.escapedPattern(for:)).joined(separator: "\\s+")
+        guard !pattern.isEmpty, let range = source.range(of: pattern, options: .regularExpression) else { return nil }
+        return String(source[range])
+    }
+
     public static func validate(_ selection: EvidenceSelection, passages: [Passage]) -> GroundedAnswer {
         guard selection.supported, !selection.quotes.isEmpty, selection.quotes.count <= 3 else {
             return GroundedAnswer(message: unavailable, citations: [], candidates: passages)
@@ -40,11 +50,12 @@ public enum GroundedAssistant {
             // Fail closed: do not display any model-written answer, unsupported quote or invented source.
             guard let passage = passages.first(where: { $0.id == quote.passageID }),
                   quote.text.trimmingCharacters(in: .whitespacesAndNewlines).count >= 10,
-                  quote.text.count <= 1200, passage.text.contains(quote.text) else {
+                  quote.text.count <= 1200,
+                  let original = verifiedQuote(quote.text, in: passage.text) else {
                 return GroundedAnswer(message: "The model’s proposed evidence did not match the saved text. No answer was shown.", citations: [], candidates: passages)
             }
-            if !citations.contains(where: { $0.passage.id == passage.id && $0.quote == quote.text }) {
-                citations.append(EvidenceCitation(id: citations.count + 1, passage: passage, quote: quote.text))
+            if !citations.contains(where: { $0.passage.id == passage.id && $0.quote == original }) {
+                citations.append(EvidenceCitation(id: citations.count + 1, passage: passage, quote: original))
             }
         }
         let lead = selection.conflict ? "The retrieved passages may disagree. Compare these excerpts:" : "Supporting excerpts from your memories:"
