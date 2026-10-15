@@ -15,7 +15,9 @@ enum Capture {
         "\(window.owningApplication?.applicationName ?? "App") — \(window.title ?? "Untitled window")"
     }
 
-    static func text(from window: SCWindow) async throws -> String {
+    struct Result { let text: String; let png: Data }
+
+    static func snapshot(from window: SCWindow) async throws -> Result {
         let filter = SCContentFilter(desktopIndependentWindow: window)
         let config = SCStreamConfiguration()
         let scale = min(2.0, 4096.0 / max(window.frame.width, window.frame.height))
@@ -28,7 +30,11 @@ enum Capture {
             request.recognitionLevel = .accurate
             request.usesLanguageCorrection = false
             try VNImageRequestHandler(cgImage: image).perform([request])
-            return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+            guard let png = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) else {
+                throw NSError(domain: "Capture", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not encode the screenshot."])
+            }
+            return Result(text: text, png: png)
         }.value
     }
 }

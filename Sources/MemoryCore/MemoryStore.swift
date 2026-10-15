@@ -6,9 +6,11 @@ public struct Memory: Codable, Identifiable, Equatable {
     public var title: String
     public var source: String
     public var text: String
-    public init(title: String, source: String, text: String) {
+    public var screenshotPNG: Data?
+    public init(title: String, source: String, text: String, screenshotPNG: Data? = nil) {
         id = UUID(); createdAt = Date()
         self.title = title; self.source = source; self.text = text
+        self.screenshotPNG = screenshotPNG
     }
 }
 
@@ -24,8 +26,8 @@ public final class MemoryStore {
     }
 
     @discardableResult public func add(_ memory: Memory) throws -> Bool {
-        guard !memory.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
-        guard !memories.contains(where: { $0.text == memory.text && $0.source == memory.source }) else { return false }
+        guard !memory.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || memory.screenshotPNG != nil else { return false }
+        guard !memories.contains(where: { $0.text == memory.text && $0.source == memory.source && $0.screenshotPNG == memory.screenshotPNG }) else { return false }
         try persist([memory] + memories)
         return true
     }

@@ -7,3 +7,15 @@ __pycache__/
 *.pyc
 .venv/
 research/private/
+# Private runtime data and models must never enter the repository.
+memories.json
+memories*.json
+captures/
+screenshots/
+*.gguf
+*.safetensors
+*.key
+*.pem
+.env.*
+core
+core.*
