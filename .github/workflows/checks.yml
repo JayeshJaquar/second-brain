@@ -1,0 +1,15 @@
+name: Build and offline checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build native app
+        run: sh scripts/build-app.sh
+      - name: Check storage, images, retrieval and evidence validation
+        run: .build/release/MemoryChecks
+      - name: Check research metrics
+        run: python3 -m unittest discover -s research/evaluation -p 'test_*.py'

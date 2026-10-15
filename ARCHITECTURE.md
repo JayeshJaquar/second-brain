@@ -1,6 +1,6 @@
 # Architecture and setup
 
-The CV-oriented research scope, model-training experiments, agent design, and evaluation protocol are defined in [PORTFOLIO_PLAN.md](PORTFOLIO_PLAN.md). The Python research track is now started with an offline BM25 baseline; it is not yet connected to the native app.
+The CV-oriented research scope, model-training experiments, agent design, and evaluation protocol are defined in [PORTFOLIO_PLAN.md](PORTFOLIO_PLAN.md). The Python research track contains an offline BM25 baseline. The native app now has its own Swift BM25-style retrieval implementation; neither uses embeddings yet.
 
 ## Product boundary
 
@@ -24,7 +24,7 @@ flowchart TD
     M --> E
 ```
 
-Implemented now: selected-window capture, local OCR, user review, manual notes, local JSON persistence, keyword retrieval, deletion, native app/menu bar. The rest is planned.
+Implemented now: selected-window capture with PNG preservation, local OCR, user review, manual notes, local JSON persistence, cross-memory chunk retrieval, exact-quote validation, abstention, clickable provenance, deletion, and a native app/menu bar. Learning estimation, scheduling, semantic retrieval, monitoring and agents remain planned.
 
 ## Layers and technology choices
 
@@ -32,7 +32,7 @@ Implemented now: selected-window capture, local OCR, user review, manual notes, 
 2. **Memory engine:** Swift library in the initial app, avoiding a background server and extra installation. Move the JSON store to SQLite with transactions and full-text search before automatic sessions. Add embeddings only after keyword search has been measured. A Python worker remains optional for model experiments; it is not needed for the first milestone.
 3. **Ingestion:** Prefer actual text from explicit file imports or a future browser extension over screenshots where available. Track source URL only when supplied by the source or user, never invent it from a title. Preserve document versions and extraction confidence. Deduplicate identical content and group related changes.
 4. **Retrieval:** Combine keyword and semantic candidates; filter by date/source/topic; return original passages and stable IDs. Distinguish quotes, retrieved observations, and generated conclusions. No-match results should say there is insufficient memory.
-5. **Model gateway:** One interface for summarization, grounded answers, concept extraction, and question generation. Choose a cloud provider or local model after checking hardware, privacy preference, latency, and budget. Explicitly disclose which passages leave the device. Store secrets in Keychain; never source control or chat.
+5. **Model gateway:** One interface for summarization, grounded answers, concept extraction, and question generation. Current deployment uses local Ollama and Qwen 2.5 7B exclusively, matching the zero-budget requirement. No cloud provider or credentials are needed. If cloud integration is ever added, it requires a separate opt-in data boundary.
 6. **Learning model:** Concepts link to observations and evidence such as independent answers, hints, corrections, and applications. Store uncertainty and let the user correct assessments. Estimate by topic, not global labels such as “bad at math.”
 7. **Review:** Schedule user-prioritized concepts using recall performance and desired exam dates. News and casual reading are searchable by default, not automatically quizzed.
 8. **Updates:** Opt-in RSS/source monitoring with publication and retrieval timestamps, attribution, version comparisons, and a notification budget. “Current” always means checked against named sources at a recorded time.
@@ -59,9 +59,9 @@ Deletion must cascade into chunks, embeddings, derived summaries, and learning e
 | macOS 14+ | Now; host meets minimum | Native frameworks |
 | Screen Recording permission for Second Brain | Interactive capture test | Selected window capture; user grants via macOS |
 | Full Xcode | Optional now, useful for debugging/signing | No Apple account needed for current local package build |
-| GitHub | Optional backup and collaboration | A dedicated repository; no account-wide write access needed for prototype |
-| Cloud AI provider | AI milestone, if chosen | API key entered locally and stored in Keychain; metered usage |
-| Local model runtime | AI milestone, alternative to cloud | Model download and sufficient RAM/disk, hardware-dependent |
+| GitHub | Source code and reproducible checks | Public repository; personal memories and screenshots excluded |
+| Cloud AI provider | Not used | No API key or paid usage |
+| Local model runtime | Implemented | Existing Ollama and qwen2.5:7b-instruct; model download and sufficient RAM/disk |
 | Browser extension | Later, optional | Explicit site permissions for better page text/URLs |
 | Drive/Notion integrations | Later, only if requested | User-selected documents and provider OAuth |
 
@@ -83,6 +83,28 @@ Captured content is untrusted data. It cannot authorize tool actions, override i
 - https://developer.apple.com/documentation/screencapturekit/scscreenshotmanager
 - https://developer.apple.com/documentation/vision/recognizing-text-in-images
 
-## Implemented local AI extension
+## Implemented local AI and visual-memory path
 
-Budget decision: ₹0 API spending. Host verified as Apple M2 with 16 GB RAM. Reuse installed Ollama and qwen2.5:7b-instruct. Selected-memory questions now call a fixed loopback endpoint, reject redirects, limit excerpt/context/output size, and cite the selected memory as [1]. This is single-memory assistance, not the planned cross-memory retrieval pipeline. No cloud model integration is enabled.
+Budget decision: zero paid APIs. Development host: Apple M2 with 16 GB RAM. Reuse installed Ollama and `qwen2.5:7b-instruct`.
+
+```mermaid
+flowchart LR
+    A[Selected window] --> B[PNG + Vision OCR]
+    B --> C[Review and save locally]
+    C --> D[Memory JSON with optional PNG]
+    Q[Question] --> E[Instruction-pattern screen]
+    D --> E
+    E --> F[Overlapping chunks + BM25 ranking]
+    F --> G[Top 4 text passages]
+    G --> H[Local Qwen selects structured evidence]
+    H --> I[Exact quote and source-ID validation]
+    I --> J[Verified excerpts + clickable sources, or abstain]
+```
+
+All memories are searched by default, independently of sidebar filtering. Selected-only scope is optional. Chunks are 1,200 characters with 200-character overlap. Ranking uses lexical term statistics and a small title boost. It is not semantic search. Memories containing conservative instruction-override patterns are excluded from retrieval; this can reject legitimate articles about prompt injection and does not catch every attack.
+
+The client uses a fixed loopback endpoint, disables explicit proxies, rejects redirects, and limits question/context/output size. The model receives no tools and cannot act on screen content. It selects up to three quotes. Every displayed quote must be an exact substring of a retrieved passage with a valid ID; no unconstrained model-written answer is displayed. Relevance, completeness and source truth remain uncertain. Model-assisted conflict detection is not a guarantee.
+
+Images are embedded in each record so text/image saves and deletion use one atomic store update. Optional decoding preserves legacy text-only records. This rewrites the whole JSON store and is suitable only for a small prototype; migrate to SQLite and managed attachments before continuous capture. Files use local-user permissions but are not application-encrypted.
+
+The current text-only model sees OCR text, not screenshot pixels. Images, diagrams and flowcharts remain viewable, but visual relationships are not interpreted. A future vision encoder/model must be evaluated separately before claiming multimodal reasoning.

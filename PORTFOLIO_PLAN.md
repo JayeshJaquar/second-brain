@@ -11,10 +11,10 @@ ML, deep learning, transformers, LLMs, and generative AI overlap. Describe the a
 | Area | Implementation target | Evaluation | Status |
 | --- | --- | --- | --- |
 | Computer vision | Apple Vision OCR of selected windows | Character error rate on manually transcribed samples | Implemented, not benchmarked |
-| LLM / transformer inference | Local Qwen 2.5 7B via Ollama | Groundedness, abstention, latency | Single-memory Q&A implemented; one smoke test |
-| Information retrieval | BM25 baseline; chunking with source offsets | Recall@5, MRR@5 | Offline baseline implemented |
+| LLM / transformer inference | Local Qwen 2.5 7B via Ollama | Groundedness, abstention, latency | Cross-memory evidence selection implemented; five live grounding smoke cases |
+| Information retrieval | BM25 baseline; chunking with source offsets | Recall@5, MRR@5 | Offline baseline and native chunk retrieval implemented |
 | Deep learning / NLP | Pretrained sentence-transformer embeddings; optional cross-encoder reranker | Compare dense, lexical, hybrid, reranked retrieval | Planned |
-| Generative AI / RAG | Cross-memory explanations, summaries, flashcards with citations | Citation support, answer correctness, unanswerable cases | Planned |
+| Generative AI / RAG | Cross-memory explanations, summaries, flashcards with citations | Citation support, answer correctness, unanswerable cases | Strict extractive RAG implemented; free-form explanations and flashcards planned |
 | Classical ML | Logistic regression predicting next recall from quiz evidence | Time-split Brier score, log loss, calibration, baseline comparison | Planned; needs genuine review history |
 | Agentic AI | Bounded model-driven tool selection, observations, replanning, stop conditions | Task success, tool validity, unnecessary calls, injection resistance | Planned |
 | Training experiment | Train a small topic classifier; compare TF-IDF + linear classifier to frozen transformer embeddings + linear head | Source-grouped macro-F1 and confusion matrix | Planned |
@@ -50,14 +50,14 @@ A fixed sequence of function calls is a workflow, not evidence of autonomous age
 ## Ordered milestones
 
 1. **Now: research foundation.** Run the baseline smoke evaluation; collect a small public corpus and establish labels. Existing native app remains usable.
-2. **Retrieval milestone.** SQLite chunk storage, BM25, transformer embeddings, hybrid ranking, offline comparisons, then native cross-memory Q&A.
+2. **Retrieval milestone.** SQLite chunk storage, BM25, transformer embeddings, hybrid ranking, offline comparisons, then improve the existing native cross-memory evidence mode.
 3. **Learning milestone.** Quiz events, rule-based revision, trained recall predictor when evidence is sufficient, topic-classifier experiment.
 4. **Agent milestone.** Validated tool loop, bounded execution, trace viewer, and adversarial tests.
 5. **Portfolio release.** Reproducible environment, dataset notes, model cards, experiment report, architecture, limitations, demo video, and setup instructions. Publish only code and permitted fixtures.
 
 ## What to put on a CV
 
-Current defensible scope: native macOS capture and OCR, local memory search, and selected-memory Q&A using a pretrained local LLM. Planned features must not be presented as finished.
+Current defensible scope: native macOS capture and OCR, visual memory preservation, cross-memory BM25-style retrieval, and validated evidence selection using a pretrained local LLM. Five small live grounding cases are regression checks, not a benchmark or evidence of hallucination-free performance. Planned features must not be presented as finished.
 
 After evaluation, write bullets around measured outcomes: corpus size, retrieval improvement against BM25, grounded-answer score, and latency on the specified Mac. Never fill these with invented numbers. Be ready to explain chunking, embeddings, attention at a conceptual level, retrieval versus fine-tuning, leakage, calibration, and tool permission boundaries.
 

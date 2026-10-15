@@ -1,50 +1,78 @@
-# Second Brain for macOS
+# Second Brain
 
-Portfolio direction and measurable ML/AI milestones: [PORTFOLIO_PLAN.md](PORTFOLIO_PLAN.md). Offline retrieval baseline and evaluation: [research/README.md](research/README.md).
+A local macOS learning-memory prototype: capture selected windows, preserve screenshots and extracted text, and ask a local LLM to find supporting evidence across saved memories.
 
-A native, local-first starting point for a personal learning assistant. Requires macOS 14 or newer and Swift 5.9 or newer. No third-party packages or API key required for this milestone.
+**Status:** working prototype, not a finished autonomous learning assistant. SwiftUI + ScreenCaptureKit + Vision + a dependency-free Swift retrieval engine + Ollama. No paid API required.
 
-## What works in this milestone
+## Implemented
 
-- Native window and menu-bar entry.
-- Explicit one-shot capture of a selected window using ScreenCaptureKit.
-- On-device OCR using Vision. Screenshots are held in memory, not written to disk.
-- Review/edit extracted text before saving; manual notes work without screen permission.
-- Local persistence, keyword search across source/title/text, exact duplicate suppression, and deletion.
-- Error handling for permission failures, empty OCR, and unreadable memory files.
+- Explicit one-shot window capture; preview before saving.
+- Screenshots preserve images, diagrams and flowcharts, alongside OCR text. Image-only captures are supported. Screenshot storage can be switched off before saving.
+- Existing text-only memories remain readable. Data stays in the user's Application Support directory, outside the repository.
+- **Ask memories** searches all saved text by default. Selecting a memory is optional; a toggle restricts the scope when useful.
+- BM25-style keyword retrieval over overlapping chunks, including content beyond the old 6,000-character cutoff. Up to four candidate passages go to the local model.
+- **Strict evidence mode:** the model selects quotes using a JSON schema. The app verifies exact quote membership and source IDs, rejects invalid evidence, and attaches clickable citations itself. It displays verified excerpts rather than unrestricted generated explanations.
+- Conservative instruction-override screening excludes suspicious memories before retrieval; it can also exclude legitimate prompt-security material and is not a complete injection detector.
+- No matching evidence means an abstention. No fallback to cloud AI or general pretrained answers.
+- Saved screenshots can be viewed in the Saved memory tab. Deleting a memory removes its embedded screenshot from the active store.
 
-This is a capture-and-recall prototype with local questions about a selected memory. It does not yet include cross-memory AI retrieval, semantic retrieval, continuous observation, quizzes, mastery estimates, or news updates. OCR may lose reading order, equations, and code indentation. A screen capture provides visible content only, not an entire document or a reliable browser URL.
+## Important limits
 
-## Build and use
+The installed `qwen2.5:7b-instruct` model is **text-only**. Screenshots are retained for viewing; only OCR and user-written notes participate in AI answers. It cannot reliably interpret arrows, colors, geometry, or image meaning. A future local vision model needs its own validation. Legacy memories do not gain screenshots retroactively.
 
-From this directory:
+Exact-quote verification prevents invented answer wording from being displayed, but does not prove a quotation is relevant, complete, true, or free of misleading context. Retrieval can miss paraphrases, OCR can be wrong, and a source can contain false statements or hostile instructions. The app is not hallucination-free. Conflict detection is model-assisted, not guaranteed. Search is lexical, not embedding-based semantic search yet.
+
+Only the visible window is captured. There is no automatic scrolling, background recording, continuous monitoring, quiz scheduling, trained mastery predictor, or agent execution. See [portfolio plan](PORTFOLIO_PLAN.md) for future work.
+
+## Requirements and setup
+
+- macOS 14+, Swift 5.9+ command-line tools (full Xcode optional).
+- Ollama running locally with `qwen2.5:7b-instruct` installed for AI answers.
+- Screen Recording permission for Second Brain when using screen capture. Manual notes and memory search do not need that permission.
 
 ```sh
 sh scripts/build-app.sh
 ```
 
-Open `dist/Second Brain.app` in Finder. Start by saving a manual note and searching for it. To capture a window, click **Refresh windows**, grant macOS Screen Recording permission if requested, select a window, and click **Capture once**. Review the draft, add a source URL if known, and save. Clear or save an existing draft before capturing again.
+Open `dist/Second Brain.app` in Finder. This local build is ad-hoc signed, not notarized. Rebuilding may require Screen Recording permission to be granted again.
 
-If permission fails, check System Settings → Privacy & Security → Screen Recording (the label can vary with macOS version), enable Second Brain, and quit/reopen the app. Rebuilding an ad-hoc-signed app can require permission to be granted again. This prototype is not notarized or prepared for distribution.
+1. In **Capture**, refresh windows and choose one visible on your current desktop.
+2. Click **Capture once**, inspect its screenshot and OCR, add a source URL if known, and save.
+3. In **Ask memories**, enter a question without selecting any memory.
+4. Follow a source button to inspect the saved text and screenshot.
 
-## Data and permissions
+If Ollama is not installed, use its [official instructions](https://docs.ollama.com/quickstart). Download the model with `ollama pull qwen2.5:7b-instruct`. The model is approximately 4.7 GB on disk; runtime memory is additional. This development machine has an M2 and 16 GB RAM, but performance varies with other applications and prompt size.
 
-Saved text is at `~/Library/Application Support/SecondBrain/memories.json`. Files are restricted to the local user but are **not application-encrypted**. System backups may retain deleted data. AI questions connect only to the local Ollama endpoint at 127.0.0.1:11434, using qwen2.5:7b-instruct. Redirects are rejected. There are no cloud requests, analytics, background recording, accessibility permission, microphone access, or full-disk access in this version. Window titles are listed when you request the window list; only the selected window is captured.
+## Data and privacy
 
-Do not use multiple running copies against the same store. JSON is a temporary storage implementation for a small prototype; migrate to transactional SQLite before background capture or larger-scale usage.
+`~/Library/Application Support/SecondBrain/memories.json` holds memories, with optional PNG data encoded in each record. The store is atomically replaced and restricted to the local user; it is **not application-encrypted**. Screenshots can contain private information visible in the selected window. Backups may retain deleted data.
 
-## Verification
+The embedded-image JSON format is appropriate only for a small prototype: images increase file size and rewrite costs. SQLite plus managed image attachments is a planned scaling step. Use one running app instance against a store. Do not commit or upload your memory file.
+
+AI requests go to the fixed loopback address `127.0.0.1:11434`, with redirects rejected and explicit proxies disabled. The app selects a local model and contains no cloud integration, analytics, or outbound web search. It does not change Ollama's global settings or other apps' network behavior.
+
+## Tests
 
 ```sh
 CLANG_MODULE_CACHE_PATH="$PWD/.build/clang-cache" swift run --disable-sandbox --cache-path "$PWD/.build/cache" MemoryChecks
+python3 -m unittest discover -s research/evaluation -p 'test_*.py'
+python3 research/evaluation/baseline.py
 ```
 
-Tests cover persistence after reopening, multi-term search, duplicate/empty rejection, deletion, and corrupt-data preservation. Screen capture and OCR require an interactive permission-granted check on the Mac.
+With local Ollama running, test the actual app's retrieval/client/validator using synthetic memories:
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design and staged setup.
+```sh
+.build/release/MemoryChecks --live
+```
 
-## Local AI setup (₹0 API budget)
+Live tests include invented facts with/without memory, related questions with missing answers, a deliberately fictional fact that contradicts common model knowledge, and source prompt injection. They never load your personal store. See [test results](test-results/) for observed outcomes; a small smoke suite is not a comprehensive safety or quality benchmark.
 
-This Mac has an M2 chip, 16 GB RAM, and Ollama with `qwen2.5:7b-instruct` already installed. Keep Ollama running, select a saved memory, enter a question, and click **Ask local AI**. The app sends only the selected memory excerpt (first 6,000 characters) and question to the local service. Answers are not persisted; changing selection clears them. The model uses a 4,096-token context and a 600-token output limit. Large/non-Latin excerpts may exceed the token budget and be truncated by the runtime. Generated answers can be wrong; check the displayed original. This milestone does not search the web.
+## Layout
 
-The model does not need an API key, subscription, or additional plugin. Local processing still consumes RAM, battery, and electricity. Avoid continuous inference; request assistance when needed.
+- `Sources/SecondBrain`: native interface, screenshot capture and OCR.
+- `Sources/MemoryCore`: persistence, chunk retrieval, local model client and evidence validation.
+- `Tests/MemoryCoreTests`: executable offline and optional live checks; works without XCTest.
+- `research`: offline BM25 baseline, metrics, synthetic fixtures and research protocol.
+- `.github/workflows`: build and offline checks, no secrets or cloud inference.
+
+[Architecture](ARCHITECTURE.md) · [Portfolio and ML plan](PORTFOLIO_PLAN.md) · [Contributing](CONTRIBUTING.md) · [Security and data handling](SECURITY.md)
