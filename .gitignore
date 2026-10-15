@@ -1,0 +1,9 @@
+.build/
+dist/
+.DS_Store
+*.xcuserstate
+.env
+__pycache__/
+*.pyc
+.venv/
+research/private/

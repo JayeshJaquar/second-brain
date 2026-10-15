@@ -1,0 +1,18 @@
+{
+  "description": "Synthetic correctness fixture; not a real-world quality benchmark.",
+  "documents": [
+    {"id": "recursion", "text": "Recursion uses a base case to stop recursive calls and avoid infinite recursion."},
+    {"id": "gradient", "text": "Gradient descent updates model parameters to reduce a loss function during training."},
+    {"id": "inflation", "text": "Inflation describes increases in the general price level. This is an illustrative economics note, not current news."},
+    {"id": "sql", "text": "SQL joins combine rows from tables using a join condition."},
+    {"id": "retrieval", "text": "Retrieval finds relevant passages before a language model generates a grounded answer."},
+    {"id": "quiz", "text": "A recall quiz asks a learner to retrieve an answer without hints. Quiz outcomes provide evidence of recall."}
+  ],
+  "queries": [
+    {"id": "q1", "text": "What is the base case in recursion?", "relevant": ["recursion"]},
+    {"id": "q2", "text": "How does gradient descent reduce loss?", "relevant": ["gradient"]},
+    {"id": "q3", "text": "What do SQL joins combine?", "relevant": ["sql"]},
+    {"id": "q4", "text": "How does retrieval help a language model?", "relevant": ["retrieval"]},
+    {"id": "q5", "text": "What provides evidence of learner recall?", "relevant": ["quiz"]}
+  ]
+}
