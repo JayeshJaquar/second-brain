@@ -15,7 +15,7 @@ enum Capture {
         "\(window.owningApplication?.applicationName ?? "App") — \(window.title ?? "Untitled window")"
     }
 
-    struct Result { let text: String; let png: Data }
+    struct Result { let text: String; let png: Data; let regions: [[String: Any]] }
 
     static func snapshot(from window: SCWindow) async throws -> Result {
         let filter = SCContentFilter(desktopIndependentWindow: window)
@@ -34,7 +34,13 @@ enum Capture {
             guard let png = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) else {
                 throw NSError(domain: "Capture", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not encode the screenshot."])
             }
-            return Result(text: text, png: png)
+            let regions: [[String: Any]] = (request.results ?? []).compactMap { observation in
+                guard let candidate = observation.topCandidates(1).first else { return nil }
+                let box = observation.boundingBox
+                return ["text": candidate.string, "confidence": candidate.confidence,
+                        "x": box.minX, "y": box.minY, "width": box.width, "height": box.height]
+            }
+            return Result(text: text, png: png, regions: regions)
         }.value
     }
 }

@@ -1,0 +1,54 @@
+# Decision log
+
+This is an append-only engineering history. Historical entries below were reconstructed on 15 October 2026 from Git commits and test reports; they are not contemporaneous records. New entries identify implementation, evidence and remaining limits. No invented historical dates or performance claims.
+
+## D01 — Native capture, local-first budget (historical)
+**Decision:** SwiftUI, ScreenCaptureKit and Apple Vision OCR; explicit one-shot window capture. **Why:** native macOS integration and zero paid API budget. Passive observation is not evidence of mastery. **Change:** capture/review/save workflow and JSON storage. **Limit:** permission renewal after ad-hoc builds and visible content only.
+
+## D02 — Local pretrained LLM (historical)
+**Decision:** installed Ollama and Qwen 2.5 7B, fixed loopback endpoint, no cloud fallback. **Why:** M2/16 GB hardware and privacy. **Limit:** inference on memories is not continual LLM training.
+
+## D03 — Grounding and visual preservation (historical; commits 28ae8bf, 42bf4fb)
+**Decision:** save PNGs with OCR; search all memories with overlapping lexical chunks; schema-constrained quote selection, citation checks and abstention. **Why:** text discarded diagram content; selected-memory questions were restrictive; free-form generation could invent answers. **Observed:** a malicious instruction was itself quoted as evidence. Added conservative instruction-pattern exclusion. **Limit:** patterns can miss attacks or exclude legitimate security material; a real quote can still be false or irrelevant. Images were stored, not semantically interpreted.
+
+## D04 — OCR whitespace (historical; 03731d8)
+**Decision:** accept whitespace-only differences but display original source characters. **Why:** valid answers failed because OCR used newlines and the model used spaces. **Observed:** real article Q&A then succeeded. Latest synthetic run was 4/5, including a false abstention on a supported fictional fact. Earlier 5/5 was not stable. No hallucination-free claim.
+
+## D05 — Python becomes the intelligence layer (15 October 2026; in progress)
+**Decision:** authenticated loopback FastAPI service; SQLite with foreign keys/FTS5 and separate image attachments. Swift becomes a client. **Why:** testable Python ML work, efficient writes, a single storage owner and maintainable cross-platform logic. **Migration:** preserve the old JSON file as an explicit legacy backup; import once with stable IDs. No automatic destruction of originals. **Limits:** backups retain deleted data; same-user malware is outside this local-token boundary.
+
+## D06 — Evidence IDs instead of copied quotations (15 October 2026; in progress)
+**Decision:** chunk at sentence boundaries; give the model stable evidence IDs and return original source text for valid selections. **Why:** avoid copying/OCR punctuation failures without tolerating fabricated prose. Optional generated explanations must be separately labelled and linked to evidence; never described as proven by citations. Clarify broad questions and report missing/conflicting evidence.
+
+## D07 — Measured semantic search and actual training (15 October 2026; in progress)
+**Decision:** BM25, dense transformer retrieval, reciprocal-rank fusion and cross-encoder reranking with reproducible evaluation. Train topic classifiers; implement a recall model only when genuine practice events meet a minimum-data gate. **Why:** meaningful Python/ML contributions rather than changing file-language percentages. Public synthetic fixtures test wiring; they do not establish real-world accuracy. Source-grouped and chronological evaluation prevent obvious leakage.
+
+## D08 — Bounded agency and separate vision evidence (15 October 2026; in progress)
+**Decision:** local model chooses validated read-only tools with step limits and visible traces; saving a proposed quiz requires an explicit action. Vision descriptions are uncertain derived data, not promoted to verified OCR. **Why:** useful planning without allowing captured instructions to authorize actions. No shell, arbitrary URL fetch, email or file-writing tools exposed to the model.
+
+## D09 — Privacy and capture reliability (15 October 2026; in progress)
+**Decision:** explicit capture sessions with exclusions and stop controls; privacy review before persistence; retention preview before deletion. Build script supports a user-provided stable signing identity without creating certificates or changing trust settings. **Why:** limit inadvertent capture and repeated ad-hoc permission resets. Stable signing still requires a suitable locally configured identity; do not claim the permission problem fixed solely by providing that option.
+
+## D10 — Python migration completed (16 October 2026; updates D05)
+**Change:** FastAPI now owns SQLite, retrieval, generation, learning and agents. Swift retains capture and presentation; its duplicate retrieval/generation/store implementations were removed. The three existing memories migrated without deleting the JSON backup, and the native client answered a saved fine-tuning question through Python. **Why:** one active implementation avoids divergent grounding rules and gives the project substantive Python ownership. **Evidence:** native build/transfer tests, migration regression tests, browser library and practice checks. **Limit:** installation still depends on this source checkout and local virtual environment.
+
+## D11 — Grounding outcome and freshness (16 October 2026; updates D06)
+**Change:** return original source spans selected by validated IDs, with scoped/all-memory retrieval, abstention and model-assisted conflict signals. The web UI displays conflict warnings. Added a mutation counter and discard logic for answers/plans generated while memories change; trace persistence is checked under the store lock. **Why:** avoid invented quotations, stale answers after deletion and retained deleted excerpts. **Evidence:** unit regressions and real Qwen suite: 5/6 pass, plus agent integration pass. **Remaining failure:** Qwen still refuses one supported fictional France-capital fact. This is a false refusal, not a passed test; no expected result was weakened. Optional generated explanations only validate citation IDs, not semantic entailment. The broad-question clarification list is a limited heuristic, not a trained intent model.
+
+## D12 — Search tradeoffs and reproducibility (16 October 2026; updates D07)
+**Change:** pinned encoder/reranker revisions, pinned Python environment, source-grouped synthetic data and ranked-result reports. Setup uses the committed revision manifest rather than resolving a moving main branch. Runtime never downloads models. **Evidence:** on 24 answerable synthetic test queries, Recall@5 is .875 lexical, 1.0 dense, 1.0 hybrid and .9583 reranked; MRR@5 is .875, .9375, .9514 and .9583. **Decision:** expose modes and report the tradeoff; do not tune the default using this test set. The rerank default preceded this evaluation. **Limit:** FTS5 is maintained but Python currently scans candidates; the 5,000-document storage check does not establish dense-search/image scalability.
+
+## D13 — Real training with honest scope (16 October 2026; updates D07)
+**Change:** trained TF-IDF and embedding logistic classifiers plus a PyTorch nonlinear head on frozen MiniLM embeddings. Record seed, splits, development loss, confusion matrices and held-out results. **Why:** show meaningful ML/DL work without pretending the project trained a foundation model. **Evidence:** synthetic test macro-F1 .600 for TF-IDF and .911 for both embedding linear and neural classifiers, with only 18 training and 12 test documents. **Limit:** toy-data results; neural training is an experiment, not the production classifier. Personal topic corrections are stored but do not silently retrain the model.
+
+## D14 — Genuine practice is the learning signal (16 October 2026; updates D07)
+**Change:** source-backed practice cards, answer reveal, hint-aware self-assessment and a transparent interval baseline. Implemented logistic recall estimation after ≥50 events with both outcomes, using earlier-history features and chronological holdout metrics versus a mean baseline. **Why:** screen exposure is not evidence of understanding. **Evidence:** schedule/feature/split unit tests and browser save/reveal check; the demo question has zero recorded attempts. **Limit:** no fabricated outcomes, no trained personal model yet, self-assessment can be noisy, and 50 events does not establish model quality. The learned estimate does not replace the rule schedule.
+
+## D15 — Bounded agent and imperfect vision verified (16 October 2026; updates D08)
+**Change:** five-step model-selected tool loop with validated arguments, retrieved-source boundaries, visible traces and explicitly saved quiz drafts. Added optional local Qwen2.5VL:3b image interpretation, stored separately and excluded from text evidence. **Evidence:** live agent searched, proposed a source-backed quiz and finished; nothing saved automatically. The original Study→Practice→Review diagram test recovered labels, relationships and “17 days.” **Observed limitation:** the vision output incorrectly claimed the fully visible title was cut off. Even an uncertainty statement can be wrong; diagram interpretations are not verified facts. One fixture is not a vision benchmark.
+
+## D16 — Privacy and capture controls shipped, signing remains external (16 October 2026; updates D09)
+**Change:** app exclusions, explicit 30-second review-before-save sessions, stop-on-error, retained OCR boxes/confidence, previewed retention, cascading deletion, owner-only data/token permissions, loopback authorization and origin/host checks. Window refresh preserves an existing valid selection or leaves it unselected, and capture refreshes window metadata. **Why:** prevent arbitrary first-window capture and avoid silent persistence. **Evidence:** auth/origin/deletion/image-sharing/request-limit regressions; successful native build. **Limit:** no valid code-signing identity exists on this Mac. The stable-identity build option is implemented, but it cannot by itself repair macOS capture permission. Screen capture remains dependent on macOS permission and visible content; backups remain after active deletion.
+
+## D17 — Public evidence and handoff (16 October 2026)
+**Decision:** publish synthetic fixtures, model revisions, reproducible experiment scripts, passing checks and the known failed live assertion. Keep weights, tokens, databases, screenshots and local caches out of Git. Add the study-team architecture diagram and a database table guide. **Why:** reviewers should be able to trace each CV claim to implementation and evidence, and the user should be able to remember how the system fits together. Future changes append decisions rather than rewriting this history.

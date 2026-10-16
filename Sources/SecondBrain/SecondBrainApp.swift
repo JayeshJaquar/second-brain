@@ -12,55 +12,101 @@ import MemoryCore
     @Published var keepScreenshot = true
     @Published var title = ""
     @Published var source = "Manual note"
-    @Published var query = "" { didSet { refresh() } }
+    @Published var query = "" { didSet { filter() } }
     @Published var status = "Local only · Capture starts when you click Capture once."
     @Published var busy = false
     @Published var revision = 0
-    private var store: MemoryStore?
-
+    @Published var ready = false
+    @Published var sessionActive = false
+    @Published var excludedApps = UserDefaults.standard.string(forKey: "excludedApps") ?? "1Password,Keychain Access,System Settings"
+    @Published var draftOCR: [[String: Any]] = []
+    private var sessionTask: Task<Void, Never>?
+    private let backend = PythonBridge.shared
     init() {
-        do {
-            let base = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
-                                                  appropriateFor: nil, create: true)
-            store = try MemoryStore(url: base.appendingPathComponent("SecondBrain/memories.json"))
-            refresh()
-        } catch { status = "Cannot open memory store: \(error.localizedDescription). Existing data has not been replaced." }
+        Task { await connect() }
     }
-    func refresh() { allMemories = store?.memories ?? []; memories = store?.search(query) ?? [] }
+    func connect() async {
+        do {
+            status = "Starting the local Python engine…"
+            try await backend.connect(); try await refresh(); ready = true
+            status = "Python engine connected · SQLite memory · Local AI"
+        } catch { status = "Cannot connect: \(error.localizedDescription)" }
+    }
+    func filter() {
+        let words = query.split(whereSeparator: { $0.isWhitespace })
+        memories = allMemories.filter { m in words.allSatisfy { "\(m.title) \(m.source) \(m.text)".localizedCaseInsensitiveContains($0) } }
+    }
+    func refresh() async throws {
+        let updated = try await backend.memories()
+        if updated.map(\.id) != allMemories.map(\.id) { revision += 1 }
+        allMemories = updated; filter()
+    }
+    func loadImage(_ id: UUID?) async {
+        guard let id, let index = allMemories.firstIndex(where: { $0.id == id }), allMemories[index].hasImage == true else { return }
+        do {
+            let data = try await backend.request("api/memories/\(id.uuidString.lowercased())/image")
+            if let current = allMemories.firstIndex(where: { $0.id == id }) { allMemories[current].screenshotPNG = data; filter() }
+        } catch { status = "Image unavailable: \(error.localizedDescription)" }
+    }
+    func allowed(_ window: SCWindow) -> Bool {
+        let blocked = excludedApps.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() }.filter { !$0.isEmpty }
+        let app = window.owningApplication?.applicationName.lowercased() ?? ""
+        return !blocked.contains(where: { app.contains($0) })
+    }
+    func stopSession() { sessionTask?.cancel(); sessionTask = nil; sessionActive = false }
+    func startSession() {
+        guard selectedWindow != 0 else { return }
+        sessionActive = true
+        sessionTask = Task { @MainActor in
+            while !Task.isCancelled {
+                if draft.isEmpty && draftPNG == nil && !busy { await capture() }
+                do { try await Task.sleep(for: .seconds(30)) } catch { break }
+            }
+        }
+    }
     func loadWindows() async {
         busy = true; defer { busy = false }
         do {
-            windows = try await Capture.windows()
-            selectedWindow = windows.first?.windowID ?? 0
+            UserDefaults.standard.set(excludedApps, forKey: "excludedApps")
+            windows = try await Capture.windows().filter { allowed($0) }
+            if !windows.contains(where: { $0.windowID == selectedWindow }) { selectedWindow = 0 }
             status = windows.isEmpty ? "No visible windows. Bring the window onto this desktop and refresh." : "Choose a window, then capture once."
         } catch { status = "Window access failed: \(error.localizedDescription). Check Screen Recording permission and relaunch if needed." }
     }
     func capture() async {
-        guard let window = windows.first(where: { $0.windowID == selectedWindow }) else { return }
+        guard let window = windows.first(where: { $0.windowID == selectedWindow }), allowed(window) else { status = "This application is excluded from capture."; stopSession(); return }
         busy = true; status = "Capturing the window, including images, and reading text…"
         defer { busy = false }
         do {
-            let capture = try await Capture.snapshot(from: window)
-            draft = capture.text; draftPNG = capture.png
-            title = window.title ?? "Captured window"; source = Capture.label(window)
+            guard let currentWindow = try await Capture.windows().first(where: { $0.windowID == window.windowID }), allowed(currentWindow) else {
+                stopSession(); status = "The selected window is no longer available."; return
+            }
+            let capture = try await Capture.snapshot(from: currentWindow)
+            if Task.isCancelled { return }
+            draft = capture.text; draftPNG = capture.png; draftOCR = capture.regions
+            title = currentWindow.title ?? "Captured window"; source = Capture.label(currentWindow)
             status = "Review the screenshot and text before saving. Only visible content was captured."
-        } catch { status = "Capture failed: \(error.localizedDescription)" }
+        } catch { stopSession(); status = "Capture failed: \(error.localizedDescription)" }
     }
-    func clearDraft() { draft = ""; title = ""; source = "Manual note"; draftPNG = nil }
-    func save() {
-        guard let store else { status = "Memory store unavailable. Nothing saved."; return }
+    func clearDraft() { draft = ""; title = ""; source = "Manual note"; draftPNG = nil; draftOCR = [] }
+    func save() async {
+        guard ready else { return }
+        busy = true; defer { busy = false }
         do {
-            let memory = Memory(title: title.isEmpty ? "Untitled memory" : title, source: source,
-                                text: draft, screenshotPNG: keepScreenshot ? draftPNG : nil)
-            if try store.add(memory) {
-                clearDraft(); refresh(); revision += 1; status = "Saved on this Mac. Find it in Memories or ask across all memories."
-            } else { status = "Empty or duplicate memory. Nothing added." }
+            var body: [String: Any] = ["title": title.isEmpty ? "Untitled memory" : title, "source": source, "text": draft,
+                                       "kind": draftPNG == nil ? "note" : "ocr", "ocr": draftOCR]
+            if keepScreenshot, let data = draftPNG { body["screenshotPNG"] = data.base64EncodedString() }
+            _ = try await backend.request("api/memories", method: "POST", body: body)
+            clearDraft(); try await refresh(); revision += 1; status = "Saved in local SQLite memory."
         } catch { status = "Save failed: \(error.localizedDescription)" }
     }
-    func delete(_ id: UUID) {
-        do { try store?.delete(id: id); refresh(); revision += 1; status = "Memory and its stored image deleted from the active store." }
-        catch { status = "Delete failed: \(error.localizedDescription)" }
+    func delete(_ id: UUID) async {
+        do {
+            _ = try await backend.request("api/memories/\(id.uuidString.lowercased())", method: "DELETE")
+            try await refresh(); revision += 1; status = "Deleted from the active database, including dependent images, indexes and practice records."
+        } catch { status = "Delete failed: \(error.localizedDescription)" }
     }
+
 }
 
 @main struct SecondBrainApp: App {
@@ -75,7 +121,7 @@ struct MenuContent: View {
     @Environment(\.openWindow) private var openWindow
     var body: some View {
         Button("Open Second Brain") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
-        Text("Manual capture only")
+        Text("Review captures before saving")
         Divider()
         Button("Quit") { NSApp.terminate(nil) }
     }
@@ -90,7 +136,7 @@ struct BrainView: View {
         NavigationSplitView {
             List(model.memories, selection: $selected) { memory in
                 VStack(alignment: .leading, spacing: 5) {
-                    Label(memory.title, systemImage: memory.screenshotPNG == nil ? "doc.text" : "photo.on.rectangle")
+                    Label(memory.title, systemImage: memory.hasImage != true ? "doc.text" : "photo.on.rectangle")
                         .font(.headline).lineLimit(2)
                     Text(memory.source).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                     Text(memory.createdAt, style: .date).font(.caption2)
@@ -103,6 +149,9 @@ struct BrainView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Your learning, remembered.").font(.largeTitle.bold())
                 Text(model.status).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
+                HStack { Button("Open Learning Studio") { PythonBridge.shared.openStudio() }.disabled(!model.ready)
+                    Button("Refresh memories") { Task { try? await model.refresh() } }
+                    if !model.ready { Button("Reconnect") { Task { await model.connect() } } } }
                 TabView(selection: $tab) {
                     CaptureView(model: model).tabItem { Label("Capture", systemImage: "camera") }.tag(0)
                     AskView(model: model, selected: $selected, tab: $tab)
@@ -132,9 +181,11 @@ struct BrainView: View {
                 }
             }.padding(22).frame(minWidth: 650, minHeight: 620)
         }
-        .onChange(of: selected) { _, _ in tab = 2 }
+        .onChange(of: selected) { _, value in tab = 2; Task { await model.loadImage(value) } }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in if model.ready { Task { try? await model.refresh() } } }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in model.stopSession(); PythonBridge.shared.stopOwnedProcess() }
         .confirmationDialog("Delete this memory and its image?", isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } })) {
-            Button("Delete memory", role: .destructive) { if let id = pendingDelete { model.delete(id) }; pendingDelete = nil }
+            Button("Delete memory", role: .destructive) { if let id = pendingDelete { Task { await model.delete(id) } }; pendingDelete = nil }
             Button("Cancel", role: .cancel) { pendingDelete = nil }
         }
     }
@@ -155,6 +206,14 @@ struct CaptureView: View {
                         .disabled(model.selectedWindow == 0 || !model.draft.isEmpty || model.draftPNG != nil)
                 }.disabled(model.busy)
                 if model.busy { ProgressView() }
+                TextField("Excluded apps (comma-separated)", text: $model.excludedApps)
+                HStack {
+                    Button(model.sessionActive ? "Stop capture session" : "Start review-before-save session") {
+                        if model.sessionActive { model.stopSession() } else { model.startSession() }
+                    }.disabled(model.selectedWindow == 0 && !model.sessionActive)
+                    Text(model.sessionActive ? "Session active · checks every 30s; waits for draft review" : "Session stopped")
+                        .font(.caption)
+                }
                 Toggle("Save screenshot with this memory (includes images and diagrams)", isOn: $model.keepScreenshot)
                 Text("Screenshots can include browser tabs and other visible private details. Review before saving. Everything stays on this Mac.")
                     .font(.caption).foregroundStyle(.secondary)
@@ -166,8 +225,8 @@ struct CaptureView: View {
                 Text("Review extracted text, or write a note").font(.headline)
                 TextEditor(text: $model.draft).font(.system(.body, design: .monospaced)).frame(height: 180).border(.quaternary)
                 HStack {
-                    Button("Save memory") { model.save() }.buttonStyle(.borderedProminent)
-                        .disabled(model.busy || (model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !(model.keepScreenshot && model.draftPNG != nil)))
+                    Button("Save memory") { Task { await model.save() } }.buttonStyle(.borderedProminent)
+                        .disabled(!model.ready || model.busy || (model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !(model.keepScreenshot && model.draftPNG != nil)))
                     Button("Clear draft") { model.clearDraft() }.disabled(model.busy)
                 }
             }.padding()
@@ -181,7 +240,7 @@ struct AskView: View {
     @Binding var tab: Int
     @State private var question = ""
     @State private var selectedOnly = false
-    @State private var result: GroundedAnswer?
+    @State private var result: BackendAnswer?
     @State private var errorMessage = ""
     @State private var task: Task<Void, Never>?
     @State private var busy = false
@@ -189,23 +248,23 @@ struct AskView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Ask across all saved memories").font(.title2)
-            Text("Strict evidence mode: answers are verified excerpts, not free-form guesses. No matching evidence means no answer. Keyword retrieval may miss paraphrases.")
+            Text("Strict evidence mode: answers are verified excerpts, not free-form guesses. No matching evidence means no answer. Python combines keyword and semantic search, then reranks evidence.")
                 .foregroundStyle(.secondary)
             Toggle("Search only the selected memory", isOn: $selectedOnly).disabled(selected == nil)
             TextField("Ask a question — no memory selection required", text: $question)
                 .textFieldStyle(.roundedBorder)
             HStack {
                 Button(busy ? "Finding evidence…" : "Ask local AI") {
-                    let memories = selectedOnly ? model.allMemories.filter { $0.id == selected } : model.allMemories
+                    let scope = selectedOnly ? selected : nil
                     task = Task { @MainActor in
                         busy = true; result = nil; errorMessage = ""
                         do {
-                            let response = try await GroundedAssistant.answer(question: question, memories: memories)
+                            let response = try await PythonBridge.shared.ask(question, scope: scope)
                             if !Task.isCancelled { result = response }
                         } catch { if !Task.isCancelled { errorMessage = error.localizedDescription } }
                         if !Task.isCancelled { busy = false }
                     }
-                }.buttonStyle(.borderedProminent).disabled(busy || question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }.buttonStyle(.borderedProminent).disabled(!model.ready || busy || question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 if busy { Button("Cancel") { cancel() }; ProgressView().controlSize(.small) }
             }
             ScrollView {
@@ -215,20 +274,21 @@ struct AskView: View {
                         Text(result.message).textSelection(.enabled)
                         ForEach(result.citations) { citation in
                             Button {
-                                selected = citation.passage.memoryID; tab = 2
+                                selected = citation.memory_id; tab = 2
                             } label: {
                                 VStack(alignment: .leading) {
-                                    Text("[\(citation.id)] \(citation.passage.title)")
-                                    Text("\(citation.passage.source) · \(citation.passage.capturedAt.formatted())").font(.caption)
+                                    Text("[\(citation.id)] \(citation.title)")
+                                    Text("\(citation.source) · \(Date(timeIntervalSince1970: citation.created_at).formatted())").font(.caption)
                                 }
                             }.buttonStyle(.link)
                         }
-                        Text("Searched \(result.candidates.count) candidate passages. Verified quotations show what the source says; they do not prove that the source is correct or fully answers your question.")
+                        ForEach(result.warnings, id: \.self) { Text($0).font(.caption) }
+                        Text("Search: \(result.mode). Searched \(result.candidate_count) candidate passages. Verified quotations show what the source says; they do not prove that the source is correct or fully answers your question.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
-            Text("Local Qwen · images preserved for viewing; AI uses extracted text only").font(.caption).foregroundStyle(.secondary)
+            Text("Python + local Qwen · diagram interpretation and practice in Learning Studio").font(.caption).foregroundStyle(.secondary)
         }.padding()
         .onChange(of: model.revision) { _, _ in cancel(); result = nil; errorMessage = "" }
         .onChange(of: selectedOnly) { _, _ in cancel(); result = nil }

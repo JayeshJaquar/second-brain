@@ -20,5 +20,13 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>NSHighResolutionCapable</key><true/>
 </dict></plist>
 PLIST
-codesign --force --sign - "$APP"
+python3 - "$APP/Contents/Info.plist" "$PWD" <<'PYPLIST'
+import plistlib,sys
+path=sys.argv[1]
+with open(path,'rb') as f: data=plistlib.load(f)
+data['SecondBrainProjectRoot']=sys.argv[2]
+data['CFBundleShortVersionString']='0.2.0'
+with open(path,'wb') as f: plistlib.dump(data,f)
+PYPLIST
+codesign --force --sign "${SECOND_BRAIN_SIGNING_IDENTITY:--}" "$APP"
 printf 'Built %s\n' "$APP"
