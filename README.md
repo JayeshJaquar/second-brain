@@ -1,78 +1,80 @@
 # Second Brain
 
-A local macOS learning-memory prototype: capture selected windows, preserve screenshots and extracted text, and ask a local LLM to find supporting evidence across saved memories.
+A local macOS learning assistant with a **Python AI engine**, a Swift capture client, and a browser-based Learning Studio. Save material you read, ask questions across your memories, inspect source excerpts, and practise recall. No paid AI APIs or cloud inference are required.
 
-**Status:** working prototype, not a finished autonomous learning assistant. SwiftUI + ScreenCaptureKit + Vision + a dependency-free Swift retrieval engine + Ollama. No paid API required.
+## What works
 
-## Implemented
+- **Capture:** choose a visible Mac window, preserve a PNG and Apple Vision OCR with confidence/coordinates, then review before saving. Optional 30-second sessions pause while a draft awaits review. App exclusions and stop controls are available. Capture is not automatic surveillance or full-document ingestion.
+- **Memory:** SQLite stores text, provenance, chunks, vectors, practice events and traces; hash-addressed PNGs live in a separate attachments folder. Duplicate saves are detected. Old JSON memories import once and remain as a rollback backup.
+- **Question answering:** search all saved memories, or restrict to one. BM25 and transformer embeddings can be fused, with optional cross-encoder reranking. The local LLM selects evidence IDs; the app displays exact stored excerpts with citations or abstains. Optional generated explanations have a separate warning.
+- **Vision:** a local vision-language model proposes diagram labels and relationships. These remain unverified and are deliberately excluded from text answers.
+- **Practice:** create source-backed questions, reveal answers, record your own recall and hint use, and see due reviews. A rule-based spaced schedule works immediately; an experimental learned recall estimate requires at least 50 genuine events with both outcomes.
+- **Agent:** a bounded model-driven loop searches memories, reads retrieved sources and proposes quiz drafts. Its tool trace is visible; a person must save a draft.
+- **ML/DL experiments:** train TF-IDF and embedding-based logistic classifiers and a PyTorch neural topic head on frozen transformer embeddings. Reproducible synthetic fixtures, splits, baselines, loss curves and evaluations are included.
 
-- Explicit one-shot window capture; preview before saving.
-- Screenshots preserve images, diagrams and flowcharts, alongside OCR text. Image-only captures are supported. Screenshot storage can be switched off before saving.
-- Existing text-only memories remain readable. Data stays in the user's Application Support directory, outside the repository.
-- **Ask memories** searches all saved text by default. Selecting a memory is optional; a toggle restricts the scope when useful.
-- BM25-style keyword retrieval over overlapping chunks, including content beyond the old 6,000-character cutoff. Up to four candidate passages go to the local model.
-- **Strict evidence mode:** the model selects quotes using a JSON schema. The app verifies quote membership and source IDs (allowing only whitespace differences from OCR wrapping, then displaying the original source), rejects invalid evidence, and attaches clickable citations itself. It displays verified excerpts rather than unrestricted generated explanations.
-- Conservative instruction-override screening excludes suspicious memories before retrieval; it can also exclude legitimate prompt-security material and is not a complete injection detector.
-- No matching evidence means an abstention. No fallback to cloud AI or general pretrained answers.
-- Saved screenshots can be viewed in the Saved memory tab. Deleting a memory removes its embedded screenshot from the active store.
+This is a research prototype. It does not continuously retrain the LLM, prove mastery from screen time, browse current news automatically, or eliminate hallucinations. Current information must be imported. A cited excerpt may be irrelevant or factually wrong.
 
-## Important limits
+## Setup on macOS
 
-The installed `qwen2.5:7b-instruct` model is **text-only**. Screenshots are retained for viewing; only OCR and user-written notes participate in AI answers. It cannot reliably interpret arrows, colors, geometry, or image meaning. A future local vision model needs its own validation. Legacy memories do not gain screenshots retroactively.
-
-Exact-quote verification prevents invented answer wording from being displayed, but does not prove a quotation is relevant, complete, true, or free of misleading context. Retrieval can miss paraphrases, OCR can be wrong, and a source can contain false statements or hostile instructions. The app is not hallucination-free. Conflict detection is model-assisted, not guaranteed. Search is lexical, not embedding-based semantic search yet.
-
-Only the visible window is captured. There is no automatic scrolling, background recording, continuous monitoring, quiz scheduling, trained mastery predictor, or agent execution. See [portfolio plan](PORTFOLIO_PLAN.md) for future work.
-
-## Requirements and setup
-
-- macOS 14+, Swift 5.9+ command-line tools (full Xcode optional).
-- Ollama running locally with `qwen2.5:7b-instruct` installed for AI answers.
-- Screen Recording permission for Second Brain when using screen capture. Manual notes and memory search do not need that permission.
+Tested on Apple M2, 16 GB RAM, macOS with Swift 6.2 and Python 3.13.7. The native app targets macOS 14+. Install Xcode Command Line Tools, Python 3.13, and Ollama. Start Ollama, then from the repository:
 
 ```sh
+# Ensure python3 points to Python 3.13 for the tested lockfile.
+sh scripts/setup-python.sh
+ollama pull qwen2.5:7b-instruct
+# Optional visual interpretation, approximately 3.2 GB:
+ollama pull qwen2.5vl:3b
 sh scripts/build-app.sh
+open "dist/Second Brain.app"
 ```
 
-Open `dist/Second Brain.app` in Finder. This local build is ad-hoc signed, not notarized. Rebuilding may require Screen Recording permission to be granted again.
+Setup downloads Python packages and the two pinned search models. Runtime search loads local files only; inference uses Ollama on loopback. Downloaded model licences apply to their respective models. Weights, private memories, tokens and screenshots are not in Git.
 
-1. In **Capture**, refresh windows and choose one visible on your current desktop.
-2. Click **Capture once**, inspect its screenshot and OCR, add a source URL if known, and save.
-3. In **Ask memories**, enter a question without selecting any memory.
-4. Follow a source button to inspect the saved text and screenshot.
+The app starts the Python service and opens Learning Studio through **Open Learning Studio**. Alternatively, `sh scripts/start-backend.sh` starts it at `http://127.0.0.1:8765`. For manual browser login, the local token is in the private data directory; do not paste it into issues or commit it. The app transfers it using a URL fragment, which the page removes and keeps in session storage.
 
-If Ollama is not installed, use its [official instructions](https://docs.ollama.com/quickstart). Download the model with `ollama pull qwen2.5:7b-instruct`. The model is approximately 4.7 GB on disk; runtime memory is additional. This development machine has an M2 and 16 GB RAM, but performance varies with other applications and prompt size.
+Grant Screen Recording permission to the built app when you want capture. Ad-hoc signing can require permission renewal after rebuilding. A configured stable code-signing identity can be supplied using `SECOND_BRAIN_SIGNING_IDENTITY`; the build script does not create certificates or change trust settings. No valid identity was available on the development Mac, so this remains a setup limitation.
 
-## Data and privacy
+## Your data
 
-`~/Library/Application Support/SecondBrain/memories.json` holds memories, with optional PNG data encoded in each record. The store is atomically replaced and restricted to the local user; it is **not application-encrypted**. Screenshots can contain private information visible in the selected window. Backups may retain deleted data.
+Default directory: `~/Library/Application Support/SecondBrain/`.
 
-The embedded-image JSON format is appropriate only for a small prototype: images increase file size and rewrite costs. SQLite plus managed image attachments is a planned scaling step. Use one running app instance against a store. Do not commit or upload your memory file.
+| Item | Purpose |
+| --- | --- |
+| `brain.sqlite3` | Active memories, chunks, embedding vectors, practice history, visual descriptions, agent traces |
+| `attachments/<hash>.png` | Original saved screenshots, shared by identical images |
+| `backend.token` | Local API authentication, owner-readable only |
+| `memories.json` | Retained legacy backup, if present; no longer the active store |
 
-AI requests go to the fixed loopback address `127.0.0.1:11434`, with redirects rejected and explicit proxies disabled. The app selects a local model and contains no cloud integration, analytics, or outbound web search. It does not change Ollama's global settings or other apps' network behavior.
+Deleting a memory removes its dependent active records and unreferenced screenshot; it also clears agent traces to avoid retaining excerpts. **Legacy JSON, exports and system backups remain.** The database is not application-encrypted. Storage/privacy offers a retention preview before explicit deletion. `SECOND_BRAIN_DATA` can select an isolated Python data directory; the native client expects the default directory.
 
-## Tests
+## Reproduce the work
 
 ```sh
-CLANG_MODULE_CACHE_PATH="$PWD/.build/clang-cache" swift run --disable-sandbox --cache-path "$PWD/.build/cache" MemoryChecks
+(cd backend && ../.venv/bin/python -m pytest -q)
+sh scripts/build-app.sh
+.build/release/MemoryChecks
 python3 -m unittest discover -s research/evaluation -p 'test_*.py'
-python3 research/evaluation/baseline.py
+
+# Search and ML experiments; downloaded search weights required:
+.venv/bin/python backend/experiments/evaluate.py
+.venv/bin/python backend/experiments/train_neural_topic.py
+.venv/bin/python backend/experiments/scale_check.py
+
+# Explicit integration tests with local Ollama:
+.venv/bin/python backend/experiments/live_checks.py
+.venv/bin/python backend/experiments/vision_checks.py
 ```
 
-With local Ollama running, test the actual app's retrieval/client/validator using synthetic memories:
+`evaluate.py` also writes the optional local topic suggestion model. It is trained on tiny synthetic data and is not a reliable personal classifier. The neural head is a measured research experiment, not the production classifier. CI runs offline unit checks and the native build, not LLM downloads or live model tests.
 
-```sh
-.build/release/MemoryChecks --live
-```
+## Evidence and navigation
 
-Live model checks can fail on false abstentions even when offline tests pass; observed runs and unresolved limitations are recorded in the report. Live tests include invented facts with/without memory, related questions with missing answers, a deliberately fictional fact that contradicts common model knowledge, and source prompt injection. They never load your personal store. See [test results](test-results/) for observed outcomes; a small smoke suite is not a comprehensive safety or quality benchmark.
+- [Architecture and database](ARCHITECTURE.md)
+- [Visual explanation](docs/how-it-works.md)
+- [Engineering decision history](decisions.md)
+- [Latest results and known limitations](test-results/2026-10-16-python-engine.md)
+- [Portfolio claims and next experiments](PORTFOLIO_PLAN.md)
+- [Security and privacy boundary](SECURITY.md)
+- [Contributing and validation](CONTRIBUTING.md)
 
-## Layout
-
-- `Sources/SecondBrain`: native interface, screenshot capture and OCR.
-- `Sources/MemoryCore`: persistence, chunk retrieval, local model client and evidence validation.
-- `Tests/MemoryCoreTests`: executable offline and optional live checks; works without XCTest.
-- `research`: offline BM25 baseline, metrics, synthetic fixtures and research protocol.
-- `.github/workflows`: build and offline checks, no secrets or cloud inference.
-
-[Architecture](ARCHITECTURE.md) · [Portfolio and ML plan](PORTFOLIO_PLAN.md) · [Contributing](CONTRIBUTING.md) · [Security and data handling](SECURITY.md)
+The current live grounding suite passes **5 of 6** checks; one supported fictional fact still causes a false refusal. The agent integration check passes. These small synthetic checks do not establish real-world accuracy. See the full reports rather than treating any single metric as an overall quality score.

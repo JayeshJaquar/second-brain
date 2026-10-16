@@ -1,15 +1,13 @@
-# Security and privacy boundaries
+# Privacy and security boundaries
 
-This is a prototype and makes no security or hallucination-free guarantee.
+The engine binds to loopback and requires a local bearer token for memory APIs, including images. The private data directory uses owner-only permissions. Host/origin checks, early authentication, request limits, static-content CSP and no-store responses reduce accidental exposure. This is not a multi-user security boundary against malicious software running as the same OS user.
 
-- Only capture an explicitly selected window on demand. Review before saving.
-- Saved screenshots and text are private local data and must stay out of Git.
-- App file permissions restrict other ordinary local users; they do not replace encryption or defend against software running as the same user.
-- Source content is untrusted. The model receives no shell, network-fetch, filesystem-write, or messaging tools.
-- A conservative pattern filter excludes memories with instruction-override language. This trades recall for caution, can produce false positives, and can be bypassed by unseen attacks.
-- Strict evidence mode validates citations and verbatim quotations, allowing only whitespace differences and displaying the source original; relevance, entailment, source correctness, and conflict detection still require assessment.
-- Local HTTP communication assumes a trusted local Ollama service. Other software running on the Mac may be able to access or impersonate local services.
-- The app does not fetch URLs found in captured content. Source strings are displayed as provenance, not automatically trusted destinations.
-- Memory deletion removes stored image bytes from the current JSON store; backups and prior filesystem snapshots are outside this deletion boundary.
+No cloud fallback, arbitrary URL fetching, shell execution, messaging or remote model code is available to the agent. Search models download only during explicit setup; runtime loads pinned local weights. Ollama runs locally. Model downloads and Python package installation do require internet access.
 
-Avoid publishing sensitive examples in bug reports. Provide a minimal synthetic reproducer instead.
+Capture is explicit, excludes configured app names, and requires review before persistence. These exclusions are convenience controls, not sensitive-content detection. Text, images and source labels can contain private information; review the full preview before saving. Only visible window content is captured. Capture sessions stop on errors and never save automatically.
+
+Source instructions are data. A conservative pattern filter excludes suspected overrides, and agents have a small validated tool vocabulary. This cannot prove immunity to prompt injection or irrelevant answers. Default Q&A renders original source spans; optional explanations and vision outputs are unverified interpretations.
+
+Deleting a memory cascades through active chunks, vectors, reviews, outcomes and vision records, removes unused PNGs and clears traces. In-flight answers/plans are invalidated if memories change. Legacy JSON, browser session state, exports and system backups are not securely erased by this operation. The database is not encrypted by the app. Use OS account protections and disk encryption as appropriate.
+
+Do not commit private captures, tokens, databases, model weights or local environment files. Public test fixtures must be original synthetic or appropriately licensed non-sensitive material. Report security issues without posting private records or secrets; contact the repository owner through an available private channel before sharing sensitive details.
