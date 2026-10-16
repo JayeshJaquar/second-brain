@@ -1,0 +1,1305 @@
+{
+  "dataset_sha256": "a5a5f61c9f0a57f957dd0bb912e77613c2f5051377d9395be6bf2cba34d44dcb",
+  "description": "Original synthetic development corpus. Not held-out real-world evidence. Splits frozen by concept/source group.",
+  "python": "3.13.7",
+  "models": {
+    "encoder": {
+      "repository": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+    },
+    "reranker": {
+      "repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a"
+    }
+  },
+  "documents": 36,
+  "queries": 76,
+  "retrieval": {
+    "lexical": {
+      "recall5": 0.875,
+      "mrr5": 0.875,
+      "first_query_seconds": 0.000657666998449713,
+      "warm_p50_seconds": 0.00048629200318828225,
+      "warm_p95_seconds": 0.0005197792022954672,
+      "queries": [
+        {
+          "query": "programming-complexity-q0",
+          "ranked": [
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-complexity-q1",
+          "ranked": [
+            "programming-complexity",
+            "news_literacy-sampling",
+            "learning-interleaving"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-testing-q0",
+          "ranked": [],
+          "recall5": 0.0,
+          "rr5": 0
+        },
+        {
+          "query": "programming-testing-q1",
+          "ranked": [
+            "programming-testing"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q0",
+          "ranked": [
+            "mathematics-variance",
+            "mathematics-eigenvectors"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q1",
+          "ranked": [
+            "mathematics-variance",
+            "learning-interleaving",
+            "machine_learning-leakage"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q0",
+          "ranked": [
+            "mathematics-gradient",
+            "news_literacy-correlation",
+            "mathematics-eigenvectors"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q1",
+          "ranked": [
+            "mathematics-gradient",
+            "machine_learning-overfit",
+            "mathematics-eigenvectors"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q0",
+          "ranked": [
+            "machine_learning-calibration",
+            "mathematics-bayes"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q1",
+          "ranked": [
+            "mathematics-variance",
+            "mathematics-bayes"
+          ],
+          "recall5": 0.0,
+          "rr5": 0
+        },
+        {
+          "query": "machine_learning-leakage-q0",
+          "ranked": [
+            "machine_learning-leakage",
+            "programming-hashing",
+            "news_literacy-attribution",
+            "machine_learning-overfit",
+            "economics-inflation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q1",
+          "ranked": [
+            "machine_learning-leakage",
+            "machine_learning-overfit",
+            "machine_learning-finetuning"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q0",
+          "ranked": [
+            "economics-externality",
+            "economics-opportunity",
+            "economics-comparative"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q1",
+          "ranked": [
+            "economics-externality"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q0",
+          "ranked": [
+            "economics-comparative",
+            "mathematics-integral"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q1",
+          "ranked": [
+            "economics-comparative"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q0",
+          "ranked": [
+            "learning-hints",
+            "programming-complexity",
+            "learning-spacing",
+            "learning-retrieval_practice"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q1",
+          "ranked": [
+            "learning-hints",
+            "learning-spacing"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q0",
+          "ranked": [],
+          "recall5": 0.0,
+          "rr5": 0
+        },
+        {
+          "query": "learning-metacognition-q1",
+          "ranked": [
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q0",
+          "ranked": [
+            "news_literacy-sampling",
+            "news_literacy-dates"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q1",
+          "ranked": [
+            "news_literacy-sampling",
+            "learning-interleaving"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q0",
+          "ranked": [
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q1",
+          "ranked": [
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        }
+      ]
+    },
+    "dense": {
+      "recall5": 1.0,
+      "mrr5": 0.9375,
+      "first_query_seconds": 3.399844208965078,
+      "warm_p50_seconds": 0.007854333030991256,
+      "warm_p95_seconds": 0.008539224392734468,
+      "queries": [
+        {
+          "query": "programming-complexity-q0",
+          "ranked": [
+            "programming-complexity",
+            "machine_learning-embeddings",
+            "learning-retrieval_practice",
+            "machine_learning-finetuning",
+            "machine_learning-attention"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-complexity-q1",
+          "ranked": [
+            "programming-complexity",
+            "machine_learning-leakage",
+            "economics-gdp",
+            "news_literacy-sampling",
+            "learning-interleaving"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-testing-q0",
+          "ranked": [
+            "news_literacy-correction",
+            "programming-testing",
+            "learning-feedback",
+            "learning-spacing",
+            "machine_learning-leakage"
+          ],
+          "recall5": 1.0,
+          "rr5": 0.5
+        },
+        {
+          "query": "programming-testing-q1",
+          "ranked": [
+            "programming-testing",
+            "machine_learning-leakage",
+            "learning-hints",
+            "news_literacy-correction",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q0",
+          "ranked": [
+            "mathematics-variance",
+            "news_literacy-uncertainty",
+            "mathematics-integral",
+            "programming-complexity",
+            "news_literacy-correlation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q1",
+          "ranked": [
+            "mathematics-variance",
+            "news_literacy-correlation",
+            "mathematics-eigenvectors",
+            "machine_learning-embeddings",
+            "mathematics-derivative"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q0",
+          "ranked": [
+            "mathematics-gradient",
+            "mathematics-eigenvectors",
+            "mathematics-derivative",
+            "machine_learning-finetuning",
+            "learning-feedback"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q1",
+          "ranked": [
+            "mathematics-derivative",
+            "mathematics-gradient",
+            "mathematics-integral",
+            "mathematics-eigenvectors",
+            "machine_learning-embeddings"
+          ],
+          "recall5": 1.0,
+          "rr5": 0.5
+        },
+        {
+          "query": "machine_learning-calibration-q0",
+          "ranked": [
+            "machine_learning-calibration",
+            "news_literacy-uncertainty",
+            "mathematics-bayes",
+            "machine_learning-leakage",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q1",
+          "ranked": [
+            "machine_learning-calibration",
+            "mathematics-bayes",
+            "news_literacy-uncertainty",
+            "mathematics-derivative",
+            "news_literacy-sampling"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q0",
+          "ranked": [
+            "machine_learning-leakage",
+            "programming-hashing",
+            "programming-complexity",
+            "programming-joins",
+            "economics-inflation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q1",
+          "ranked": [
+            "machine_learning-leakage",
+            "machine_learning-overfit",
+            "news_literacy-dates",
+            "programming-transactions",
+            "news_literacy-correction"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q0",
+          "ranked": [
+            "economics-externality",
+            "economics-inflation",
+            "economics-comparative",
+            "economics-opportunity",
+            "economics-gdp"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q1",
+          "ranked": [
+            "economics-externality",
+            "news_literacy-correlation",
+            "economics-comparative",
+            "economics-gdp",
+            "machine_learning-attention"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q0",
+          "ranked": [
+            "economics-comparative",
+            "programming-complexity",
+            "economics-elasticity",
+            "economics-externality",
+            "economics-opportunity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q1",
+          "ranked": [
+            "economics-comparative",
+            "programming-complexity",
+            "economics-elasticity",
+            "economics-opportunity",
+            "economics-externality"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q0",
+          "ranked": [
+            "learning-hints",
+            "news_literacy-correction",
+            "learning-retrieval_practice",
+            "news_literacy-uncertainty",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q1",
+          "ranked": [
+            "learning-feedback",
+            "learning-hints",
+            "programming-testing",
+            "news_literacy-uncertainty",
+            "news_literacy-correlation"
+          ],
+          "recall5": 1.0,
+          "rr5": 0.5
+        },
+        {
+          "query": "learning-metacognition-q0",
+          "ranked": [
+            "learning-metacognition",
+            "news_literacy-uncertainty",
+            "learning-hints",
+            "machine_learning-overfit",
+            "machine_learning-calibration"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q1",
+          "ranked": [
+            "learning-metacognition",
+            "learning-retrieval_practice",
+            "learning-hints",
+            "learning-feedback",
+            "learning-interleaving"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q0",
+          "ranked": [
+            "news_literacy-sampling",
+            "learning-metacognition",
+            "news_literacy-uncertainty",
+            "news_literacy-attribution",
+            "machine_learning-calibration"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q1",
+          "ranked": [
+            "news_literacy-sampling",
+            "learning-interleaving",
+            "learning-spacing",
+            "learning-retrieval_practice",
+            "machine_learning-finetuning"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q0",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "news_literacy-correction",
+            "news_literacy-dates",
+            "news_literacy-attribution",
+            "news_literacy-correlation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q1",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "mathematics-variance",
+            "news_literacy-sampling",
+            "mathematics-bayes",
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        }
+      ]
+    },
+    "hybrid": {
+      "recall5": 1.0,
+      "mrr5": 0.9513888888888888,
+      "first_query_seconds": 0.007671875006053597,
+      "warm_p50_seconds": 0.007504582987166941,
+      "warm_p95_seconds": 0.007653633371228352,
+      "queries": [
+        {
+          "query": "programming-complexity-q0",
+          "ranked": [
+            "programming-complexity",
+            "machine_learning-embeddings",
+            "learning-retrieval_practice",
+            "machine_learning-finetuning",
+            "machine_learning-attention"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-complexity-q1",
+          "ranked": [
+            "programming-complexity",
+            "news_literacy-sampling",
+            "learning-interleaving",
+            "machine_learning-leakage",
+            "economics-gdp"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-testing-q0",
+          "ranked": [
+            "news_literacy-correction",
+            "programming-testing",
+            "learning-feedback",
+            "learning-spacing",
+            "machine_learning-leakage"
+          ],
+          "recall5": 1.0,
+          "rr5": 0.5
+        },
+        {
+          "query": "programming-testing-q1",
+          "ranked": [
+            "programming-testing",
+            "machine_learning-leakage",
+            "learning-hints",
+            "news_literacy-correction",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q0",
+          "ranked": [
+            "mathematics-variance",
+            "mathematics-eigenvectors",
+            "news_literacy-uncertainty",
+            "mathematics-integral",
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q1",
+          "ranked": [
+            "mathematics-variance",
+            "news_literacy-correlation",
+            "learning-interleaving",
+            "machine_learning-leakage",
+            "mathematics-eigenvectors"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q0",
+          "ranked": [
+            "mathematics-gradient",
+            "mathematics-eigenvectors",
+            "news_literacy-correlation",
+            "mathematics-derivative",
+            "machine_learning-finetuning"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q1",
+          "ranked": [
+            "mathematics-gradient",
+            "mathematics-eigenvectors",
+            "machine_learning-overfit",
+            "mathematics-derivative",
+            "mathematics-integral"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q0",
+          "ranked": [
+            "machine_learning-calibration",
+            "mathematics-bayes",
+            "news_literacy-uncertainty",
+            "machine_learning-leakage",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q1",
+          "ranked": [
+            "mathematics-bayes",
+            "mathematics-variance",
+            "machine_learning-calibration",
+            "news_literacy-uncertainty",
+            "mathematics-derivative"
+          ],
+          "recall5": 1.0,
+          "rr5": 0.3333333333333333
+        },
+        {
+          "query": "machine_learning-leakage-q0",
+          "ranked": [
+            "machine_learning-leakage",
+            "programming-hashing",
+            "economics-inflation",
+            "machine_learning-finetuning",
+            "programming-transactions"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q1",
+          "ranked": [
+            "machine_learning-leakage",
+            "machine_learning-overfit",
+            "machine_learning-finetuning",
+            "news_literacy-dates",
+            "programming-transactions"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q0",
+          "ranked": [
+            "economics-externality",
+            "economics-opportunity",
+            "economics-comparative",
+            "economics-inflation",
+            "economics-gdp"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q1",
+          "ranked": [
+            "economics-externality",
+            "news_literacy-correlation",
+            "economics-comparative",
+            "economics-gdp",
+            "machine_learning-attention"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q0",
+          "ranked": [
+            "economics-comparative",
+            "mathematics-integral",
+            "programming-complexity",
+            "economics-elasticity",
+            "economics-externality"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q1",
+          "ranked": [
+            "economics-comparative",
+            "programming-complexity",
+            "economics-elasticity",
+            "economics-opportunity",
+            "economics-externality"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q0",
+          "ranked": [
+            "learning-hints",
+            "learning-retrieval_practice",
+            "learning-spacing",
+            "news_literacy-correction",
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q1",
+          "ranked": [
+            "learning-hints",
+            "learning-spacing",
+            "learning-feedback",
+            "programming-testing",
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q0",
+          "ranked": [
+            "learning-metacognition",
+            "news_literacy-uncertainty",
+            "learning-hints",
+            "machine_learning-overfit",
+            "machine_learning-calibration"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q1",
+          "ranked": [
+            "learning-metacognition",
+            "learning-retrieval_practice",
+            "learning-hints",
+            "learning-feedback",
+            "learning-interleaving"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q0",
+          "ranked": [
+            "news_literacy-sampling",
+            "news_literacy-dates",
+            "learning-metacognition",
+            "news_literacy-uncertainty",
+            "news_literacy-attribution"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q1",
+          "ranked": [
+            "news_literacy-sampling",
+            "learning-interleaving",
+            "learning-spacing",
+            "learning-retrieval_practice",
+            "machine_learning-finetuning"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q0",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "news_literacy-correction",
+            "news_literacy-dates",
+            "news_literacy-attribution",
+            "news_literacy-correlation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q1",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "mathematics-variance",
+            "news_literacy-sampling",
+            "mathematics-bayes",
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        }
+      ]
+    },
+    "rerank": {
+      "recall5": 0.9583333333333334,
+      "mrr5": 0.9583333333333334,
+      "first_query_seconds": 0.20947662502294406,
+      "warm_p50_seconds": 0.036425583995878696,
+      "warm_p95_seconds": 0.04366592498845421,
+      "queries": [
+        {
+          "query": "programming-complexity-q0",
+          "ranked": [
+            "programming-complexity",
+            "economics-gdp",
+            "machine_learning-finetuning",
+            "machine_learning-embeddings",
+            "machine_learning-attention"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-complexity-q1",
+          "ranked": [
+            "programming-complexity",
+            "learning-interleaving",
+            "economics-gdp",
+            "learning-spacing",
+            "news_literacy-sampling"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "programming-testing-q0",
+          "ranked": [
+            "learning-spacing",
+            "learning-retrieval_practice",
+            "news_literacy-correction",
+            "news_literacy-dates",
+            "mathematics-variance"
+          ],
+          "recall5": 0.0,
+          "rr5": 0
+        },
+        {
+          "query": "programming-testing-q1",
+          "ranked": [
+            "programming-testing",
+            "machine_learning-leakage",
+            "learning-hints",
+            "programming-transactions",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q0",
+          "ranked": [
+            "mathematics-variance",
+            "mathematics-eigenvectors",
+            "programming-complexity",
+            "news_literacy-correlation",
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-variance-q1",
+          "ranked": [
+            "mathematics-variance",
+            "news_literacy-correlation",
+            "mathematics-eigenvectors",
+            "programming-complexity",
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q0",
+          "ranked": [
+            "mathematics-gradient",
+            "mathematics-derivative",
+            "mathematics-integral",
+            "mathematics-eigenvectors",
+            "news_literacy-correlation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "mathematics-gradient-q1",
+          "ranked": [
+            "mathematics-gradient",
+            "mathematics-derivative",
+            "mathematics-integral",
+            "machine_learning-overfit",
+            "mathematics-eigenvectors"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q0",
+          "ranked": [
+            "machine_learning-calibration",
+            "mathematics-bayes",
+            "news_literacy-uncertainty",
+            "machine_learning-leakage",
+            "learning-metacognition"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-calibration-q1",
+          "ranked": [
+            "machine_learning-calibration",
+            "mathematics-bayes",
+            "mathematics-variance",
+            "news_literacy-correlation",
+            "programming-transactions"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q0",
+          "ranked": [
+            "machine_learning-leakage",
+            "programming-hashing",
+            "economics-gdp",
+            "economics-inflation",
+            "machine_learning-overfit"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "machine_learning-leakage-q1",
+          "ranked": [
+            "machine_learning-leakage",
+            "machine_learning-overfit",
+            "economics-externality",
+            "news_literacy-uncertainty",
+            "economics-inflation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q0",
+          "ranked": [
+            "economics-externality",
+            "economics-comparative",
+            "economics-opportunity",
+            "economics-gdp",
+            "economics-inflation"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-externality-q1",
+          "ranked": [
+            "economics-externality",
+            "economics-inflation",
+            "mathematics-eigenvectors",
+            "news_literacy-correlation",
+            "news_literacy-attribution"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q0",
+          "ranked": [
+            "economics-comparative",
+            "mathematics-integral",
+            "economics-inflation",
+            "programming-complexity",
+            "economics-externality"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "economics-comparative-q1",
+          "ranked": [
+            "economics-comparative",
+            "programming-complexity",
+            "economics-externality",
+            "machine_learning-attention",
+            "economics-elasticity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q0",
+          "ranked": [
+            "learning-hints",
+            "news_literacy-correction",
+            "learning-retrieval_practice",
+            "learning-spacing",
+            "learning-feedback"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-hints-q1",
+          "ranked": [
+            "learning-hints",
+            "learning-spacing",
+            "news_literacy-attribution",
+            "machine_learning-overfit",
+            "learning-feedback"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q0",
+          "ranked": [
+            "learning-metacognition",
+            "programming-testing",
+            "learning-hints",
+            "news_literacy-uncertainty",
+            "machine_learning-calibration"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "learning-metacognition-q1",
+          "ranked": [
+            "learning-metacognition",
+            "machine_learning-overfit",
+            "learning-retrieval_practice",
+            "machine_learning-attention",
+            "news_literacy-uncertainty"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q0",
+          "ranked": [
+            "news_literacy-sampling",
+            "news_literacy-dates",
+            "machine_learning-calibration",
+            "learning-metacognition",
+            "programming-complexity"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-sampling-q1",
+          "ranked": [
+            "news_literacy-sampling",
+            "learning-metacognition",
+            "machine_learning-overfit",
+            "news_literacy-uncertainty",
+            "machine_learning-finetuning"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q0",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "machine_learning-calibration",
+            "learning-metacognition",
+            "mathematics-bayes",
+            "news_literacy-sampling"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        },
+        {
+          "query": "news_literacy-uncertainty-q1",
+          "ranked": [
+            "news_literacy-uncertainty",
+            "programming-complexity",
+            "mathematics-variance",
+            "machine_learning-leakage",
+            "machine_learning-calibration"
+          ],
+          "recall5": 1.0,
+          "rr5": 1.0
+        }
+      ]
+    }
+  },
+  "classification": {
+    "train_documents": 18,
+    "test_documents": 12,
+    "tfidf_macro_f1": 0.6,
+    "tfidf_report": {
+      "economics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "learning": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1-score": 0.5,
+        "support": 2.0
+      },
+      "machine_learning": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1-score": 0.5,
+        "support": 2.0
+      },
+      "mathematics": {
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1-score": 0.8,
+        "support": 2.0
+      },
+      "news_literacy": {
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1-score": 0.8,
+        "support": 2.0
+      },
+      "programming": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 2.0
+      },
+      "accuracy": 0.6666666666666666,
+      "macro avg": {
+        "precision": 0.5555555555555555,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.6,
+        "support": 12.0
+      },
+      "weighted avg": {
+        "precision": 0.5555555555555555,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.6,
+        "support": 12.0
+      }
+    },
+    "classes": [
+      "economics",
+      "learning",
+      "machine_learning",
+      "mathematics",
+      "news_literacy",
+      "programming"
+    ],
+    "tfidf_confusion": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ]
+    ],
+    "embedding_macro_f1": 0.9111111111111111,
+    "embedding_confusion": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    ]
+  },
+  "limitations": [
+    "Synthetic authored data, not a real-world benchmark.",
+    "No hyperparameter tuning on test queries.",
+    "Classifier is a small-data demonstration, not a reliable personal topic model.",
+    "Unanswerable queries require separate answer evaluation; ranking metrics do not measure abstention.",
+    "Document ranking deduplicates chunks; first-query loading is reported separately."
+  ]
+}

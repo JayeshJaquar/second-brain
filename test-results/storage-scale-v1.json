@@ -1,0 +1,26 @@
+{
+  "scope": "Generated small-document smoke test; excludes image volume, dense indexing and concurrent workloads.",
+  "measurements": [
+    {
+      "documents": 100,
+      "incremental_insert_seconds": 0.04823137499624863,
+      "keyword_query_seconds": 0.0010101249790750444,
+      "correct_first": true,
+      "database_bytes": 217088
+    },
+    {
+      "documents": 1000,
+      "incremental_insert_seconds": 0.5910640829824843,
+      "keyword_query_seconds": 0.009328666026704013,
+      "correct_first": true,
+      "database_bytes": 1265664
+    },
+    {
+      "documents": 5000,
+      "incremental_insert_seconds": 2.754881375003606,
+      "keyword_query_seconds": 0.0489747499814257,
+      "correct_first": true,
+      "database_bytes": 5996544
+    }
+  ]
+}

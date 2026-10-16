@@ -1,0 +1,859 @@
+{
+  "description": "Original synthetic development corpus. Not held-out real-world evidence. Splits frozen by concept/source group.",
+  "documents": [
+    {
+      "id": "programming-recursion",
+      "group": "programming-recursion",
+      "split": "train",
+      "topic": "programming",
+      "text": "A recursive function calls itself. A base case ends the recursion before another recursive call. Without a reachable base case, calls can exhaust the stack."
+    },
+    {
+      "id": "programming-hashing",
+      "group": "programming-hashing",
+      "split": "train",
+      "topic": "programming",
+      "text": "A hash table maps keys to buckets using a hash function. Collisions occur when different keys map to the same bucket. Chaining stores multiple entries in that bucket."
+    },
+    {
+      "id": "programming-joins",
+      "group": "programming-joins",
+      "split": "train",
+      "topic": "programming",
+      "text": "An inner SQL join returns rows with matching keys in both tables. A left join also retains unmatched rows from the left table and fills missing right-side values with nulls."
+    },
+    {
+      "id": "programming-transactions",
+      "group": "programming-transactions",
+      "split": "dev",
+      "topic": "programming",
+      "text": "A database transaction groups changes into one logical unit. Atomicity means all changes commit together or none do. Isolation controls interference between concurrent transactions."
+    },
+    {
+      "id": "programming-complexity",
+      "group": "programming-complexity",
+      "split": "test",
+      "topic": "programming",
+      "text": "Binary search repeatedly halves a sorted search interval. Its worst-case comparison count grows logarithmically with the number of elements. The input must be sorted."
+    },
+    {
+      "id": "programming-testing",
+      "group": "programming-testing",
+      "split": "test",
+      "topic": "programming",
+      "text": "A regression test checks that a previously working behavior has not broken. A unit test isolates a small component, while an integration test exercises collaborating components."
+    },
+    {
+      "id": "mathematics-derivative",
+      "group": "mathematics-derivative",
+      "split": "train",
+      "topic": "mathematics",
+      "text": "The derivative of a function describes its instantaneous rate of change. Geometrically it is the slope of the tangent line at a point where the derivative exists."
+    },
+    {
+      "id": "mathematics-integral",
+      "group": "mathematics-integral",
+      "split": "train",
+      "topic": "mathematics",
+      "text": "A definite integral accumulates signed contributions over an interval. Regions below the horizontal axis contribute negative signed area. Absolute geometric area requires accounting for sign changes."
+    },
+    {
+      "id": "mathematics-eigenvectors",
+      "group": "mathematics-eigenvectors",
+      "split": "train",
+      "topic": "mathematics",
+      "text": "An eigenvector of a square matrix keeps its direction under the matrix transformation, apart from possible reversal. The associated eigenvalue is its scale factor."
+    },
+    {
+      "id": "mathematics-bayes",
+      "group": "mathematics-bayes",
+      "split": "dev",
+      "topic": "mathematics",
+      "text": "Bayes theorem updates a prior probability using observed evidence and a likelihood. The posterior probability depends on both the prior and how probable the evidence is under the hypothesis."
+    },
+    {
+      "id": "mathematics-variance",
+      "group": "mathematics-variance",
+      "split": "test",
+      "topic": "mathematics",
+      "text": "Variance measures the average squared deviation from the mean. Squaring prevents positive and negative deviations from cancelling. Standard deviation is the square root of variance."
+    },
+    {
+      "id": "mathematics-gradient",
+      "group": "mathematics-gradient",
+      "split": "test",
+      "topic": "mathematics",
+      "text": "The gradient of a differentiable scalar function points toward its steepest local increase under the Euclidean norm. Gradient descent steps in the opposite direction to reduce the objective locally."
+    },
+    {
+      "id": "machine_learning-finetuning",
+      "group": "machine_learning-finetuning",
+      "split": "train",
+      "topic": "machine_learning",
+      "text": "Fine-tuning starts from pretrained model weights and continues training on task-specific examples. It can require less task data than training from scratch because useful representations were learned earlier."
+    },
+    {
+      "id": "machine_learning-overfit",
+      "group": "machine_learning-overfit",
+      "split": "train",
+      "topic": "machine_learning",
+      "text": "Overfitting occurs when a model captures peculiarities of training data that do not generalize. A widening gap between training and validation performance can indicate overfitting."
+    },
+    {
+      "id": "machine_learning-attention",
+      "group": "machine_learning-attention",
+      "split": "train",
+      "topic": "machine_learning",
+      "text": "Self-attention computes context-dependent representations by weighting other tokens in a sequence. Attention weights depend on query and key comparisons, and the resulting weighted sum uses value vectors."
+    },
+    {
+      "id": "machine_learning-embeddings",
+      "group": "machine_learning-embeddings",
+      "split": "dev",
+      "topic": "machine_learning",
+      "text": "A text embedding represents text as a vector. Semantic retrieval compares query and passage vectors, often with cosine similarity. Similar vectors can retrieve differently worded descriptions."
+    },
+    {
+      "id": "machine_learning-calibration",
+      "group": "machine_learning-calibration",
+      "split": "test",
+      "topic": "machine_learning",
+      "text": "A calibrated probabilistic classifier has predictions that agree with observed frequencies. Among many cases assigned probability 0.7, approximately 70 percent should be positive if the model is calibrated."
+    },
+    {
+      "id": "machine_learning-leakage",
+      "group": "machine_learning-leakage",
+      "split": "test",
+      "topic": "machine_learning",
+      "text": "Data leakage happens when training uses information unavailable at prediction time. Splitting related chunks from one document across train and test can give overly optimistic evaluation results."
+    },
+    {
+      "id": "economics-inflation",
+      "group": "economics-inflation",
+      "split": "train",
+      "topic": "economics",
+      "text": "Inflation is a sustained increase in a general price index. It differs from a rise in the price of one isolated item. This note states a definition, not a current inflation rate."
+    },
+    {
+      "id": "economics-opportunity",
+      "group": "economics-opportunity",
+      "split": "train",
+      "topic": "economics",
+      "text": "Opportunity cost is the value of the best forgone alternative. Choosing to study for one hour can sacrifice an hour available for another valued activity."
+    },
+    {
+      "id": "economics-elasticity",
+      "group": "economics-elasticity",
+      "split": "train",
+      "topic": "economics",
+      "text": "Price elasticity of demand compares the percentage change in quantity demanded to the percentage change in price. Elastic demand has a larger quantity response in percentage terms."
+    },
+    {
+      "id": "economics-gdp",
+      "group": "economics-gdp",
+      "split": "dev",
+      "topic": "economics",
+      "text": "Gross domestic product measures the value of final goods and services produced within an economy during a period. Intermediate inputs are excluded to avoid double counting."
+    },
+    {
+      "id": "economics-externality",
+      "group": "economics-externality",
+      "split": "test",
+      "topic": "economics",
+      "text": "An externality is a cost or benefit affecting a third party outside a transaction. Pollution can impose costs on nearby residents who are not parties to the production contract."
+    },
+    {
+      "id": "economics-comparative",
+      "group": "economics-comparative",
+      "split": "test",
+      "topic": "economics",
+      "text": "Comparative advantage means producing a good at a lower opportunity cost than another producer. Absolute advantage concerns productivity rather than opportunity cost."
+    },
+    {
+      "id": "learning-retrieval_practice",
+      "group": "learning-retrieval_practice",
+      "split": "train",
+      "topic": "learning",
+      "text": "Retrieval practice asks learners to recall information rather than only reread it. A closed-book attempt reveals gaps that may be hidden by familiarity with the page."
+    },
+    {
+      "id": "learning-spacing",
+      "group": "learning-spacing",
+      "split": "train",
+      "topic": "learning",
+      "text": "Spaced practice distributes review over time instead of concentrating every repetition in one session. A scheduler can shorten the next interval after unsuccessful recall."
+    },
+    {
+      "id": "learning-interleaving",
+      "group": "learning-interleaving",
+      "split": "train",
+      "topic": "learning",
+      "text": "Interleaved practice mixes related problem types. Choosing which method applies is part of the exercise, whereas blocked practice repeats one problem type at a time."
+    },
+    {
+      "id": "learning-feedback",
+      "group": "learning-feedback",
+      "split": "dev",
+      "topic": "learning",
+      "text": "Useful learning feedback identifies an error and suggests a next action. A correctness score alone does not necessarily explain the reason for the mistake."
+    },
+    {
+      "id": "learning-hints",
+      "group": "learning-hints",
+      "split": "test",
+      "topic": "learning",
+      "text": "A correct answer produced after a hint is evidence of assisted performance. It should be distinguished from independent recall when deciding what to review."
+    },
+    {
+      "id": "learning-metacognition",
+      "group": "learning-metacognition",
+      "split": "test",
+      "topic": "learning",
+      "text": "Metacognition includes monitoring what one knows and choosing learning strategies. Comparing predicted quiz performance with actual results can reveal inaccurate self-assessment."
+    },
+    {
+      "id": "news_literacy-dates",
+      "group": "news_literacy-dates",
+      "split": "train",
+      "topic": "news_literacy",
+      "text": "A news story has a publication date and may describe an earlier event date. A recently retrieved page can still contain old information. Retrieval time alone does not establish currency."
+    },
+    {
+      "id": "news_literacy-correction",
+      "group": "news_literacy-correction",
+      "split": "train",
+      "topic": "news_literacy",
+      "text": "A correction changes a previously published account. A memory system should retain provenance and show which version supports an answer instead of silently mixing old and corrected claims."
+    },
+    {
+      "id": "news_literacy-attribution",
+      "group": "news_literacy-attribution",
+      "split": "train",
+      "topic": "news_literacy",
+      "text": "Attribution identifies who made a claim and where it was reported. A quotation demonstrates what a source said but does not independently prove that the statement is true."
+    },
+    {
+      "id": "news_literacy-correlation",
+      "group": "news_literacy-correlation",
+      "split": "dev",
+      "topic": "news_literacy",
+      "text": "Correlation describes association between variables. Establishing a causal effect requires additional assumptions or evidence beyond observing that two trends move together."
+    },
+    {
+      "id": "news_literacy-sampling",
+      "group": "news_literacy-sampling",
+      "split": "test",
+      "topic": "news_literacy",
+      "text": "A survey result depends on its sampling method and who responded. A large convenience sample can still be biased if some parts of the population are systematically missing."
+    },
+    {
+      "id": "news_literacy-uncertainty",
+      "group": "news_literacy-uncertainty",
+      "split": "test",
+      "topic": "news_literacy",
+      "text": "A responsible report distinguishes confirmed observations from estimates and speculation. Numerical estimates should retain their uncertainty and the date or conditions to which they apply."
+    }
+  ],
+  "queries": [
+    {
+      "id": "programming-recursion-q0",
+      "text": "What stops repeated self-calls?",
+      "relevant": [
+        "programming-recursion"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-recursion-q1",
+      "text": "Why can recursion exhaust the stack?",
+      "relevant": [
+        "programming-recursion"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-hashing-q0",
+      "text": "How are colliding keys stored with chaining?",
+      "relevant": [
+        "programming-hashing"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-hashing-q1",
+      "text": "What causes a hash collision?",
+      "relevant": [
+        "programming-hashing"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-joins-q0",
+      "text": "Which database operation preserves unmatched left records?",
+      "relevant": [
+        "programming-joins"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-joins-q1",
+      "text": "What does an inner join return?",
+      "relevant": [
+        "programming-joins"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "programming-transactions-q0",
+      "text": "How can related database writes succeed or fail together?",
+      "relevant": [
+        "programming-transactions"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "programming-transactions-q1",
+      "text": "What controls concurrent transaction interference?",
+      "relevant": [
+        "programming-transactions"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "programming-complexity-q0",
+      "text": "What prerequisite does binary search have?",
+      "relevant": [
+        "programming-complexity"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "programming-complexity-q1",
+      "text": "Which lookup method repeatedly halves the candidates?",
+      "relevant": [
+        "programming-complexity"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "programming-testing-q0",
+      "text": "How do we catch a returning software bug?",
+      "relevant": [
+        "programming-testing"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "programming-testing-q1",
+      "text": "Which tests check collaborating components?",
+      "relevant": [
+        "programming-testing"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "mathematics-derivative-q0",
+      "text": "What describes instantaneous change?",
+      "relevant": [
+        "mathematics-derivative"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-derivative-q1",
+      "text": "What does a derivative mean geometrically?",
+      "relevant": [
+        "mathematics-derivative"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-integral-q0",
+      "text": "Why can an area calculation using integration be negative?",
+      "relevant": [
+        "mathematics-integral"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-integral-q1",
+      "text": "How does signed area differ from geometric area?",
+      "relevant": [
+        "mathematics-integral"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-eigenvectors-q0",
+      "text": "What stays on its original line during a matrix transformation?",
+      "relevant": [
+        "mathematics-eigenvectors"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-eigenvectors-q1",
+      "text": "What is an eigenvalue?",
+      "relevant": [
+        "mathematics-eigenvectors"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "mathematics-bayes-q0",
+      "text": "How do we update belief after an observation?",
+      "relevant": [
+        "mathematics-bayes"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "mathematics-bayes-q1",
+      "text": "What determines the posterior probability?",
+      "relevant": [
+        "mathematics-bayes"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "mathematics-variance-q0",
+      "text": "Why square deviations when measuring spread?",
+      "relevant": [
+        "mathematics-variance"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "mathematics-variance-q1",
+      "text": "How is standard deviation related to variance?",
+      "relevant": [
+        "mathematics-variance"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "mathematics-gradient-q0",
+      "text": "Which direction does gradient descent move?",
+      "relevant": [
+        "mathematics-gradient"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "mathematics-gradient-q1",
+      "text": "What direction does a gradient indicate?",
+      "relevant": [
+        "mathematics-gradient"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "machine_learning-finetuning-q0",
+      "text": "Why can adapting an existing model use fewer examples?",
+      "relevant": [
+        "machine_learning-finetuning"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-finetuning-q1",
+      "text": "What weights does fine-tuning start from?",
+      "relevant": [
+        "machine_learning-finetuning"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-overfit-q0",
+      "text": "What does strong training but weak validation performance suggest?",
+      "relevant": [
+        "machine_learning-overfit"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-overfit-q1",
+      "text": "What is overfitting?",
+      "relevant": [
+        "machine_learning-overfit"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-attention-q0",
+      "text": "How do tokens incorporate context from other tokens?",
+      "relevant": [
+        "machine_learning-attention"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-attention-q1",
+      "text": "Which vectors are combined by attention weights?",
+      "relevant": [
+        "machine_learning-attention"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "machine_learning-embeddings-q0",
+      "text": "How can a search match paraphrases without exact words?",
+      "relevant": [
+        "machine_learning-embeddings"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "machine_learning-embeddings-q1",
+      "text": "What does semantic retrieval compare?",
+      "relevant": [
+        "machine_learning-embeddings"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "machine_learning-calibration-q0",
+      "text": "What should happen among predictions assigned seventy percent probability?",
+      "relevant": [
+        "machine_learning-calibration"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "machine_learning-calibration-q1",
+      "text": "What does probability calibration mean?",
+      "relevant": [
+        "machine_learning-calibration"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "machine_learning-leakage-q0",
+      "text": "Why keep chunks from one source in the same data split?",
+      "relevant": [
+        "machine_learning-leakage"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "machine_learning-leakage-q1",
+      "text": "What is data leakage?",
+      "relevant": [
+        "machine_learning-leakage"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "economics-inflation-q0",
+      "text": "Does one expensive item establish general inflation?",
+      "relevant": [
+        "economics-inflation"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-inflation-q1",
+      "text": "What does inflation measure?",
+      "relevant": [
+        "economics-inflation"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-opportunity-q0",
+      "text": "What is the value of an alternative we give up?",
+      "relevant": [
+        "economics-opportunity"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-opportunity-q1",
+      "text": "How does choosing study time create an opportunity cost?",
+      "relevant": [
+        "economics-opportunity"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-elasticity-q0",
+      "text": "How do economists measure demand sensitivity to price?",
+      "relevant": [
+        "economics-elasticity"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-elasticity-q1",
+      "text": "What does elastic demand mean?",
+      "relevant": [
+        "economics-elasticity"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "economics-gdp-q0",
+      "text": "Why exclude intermediate goods from national output totals?",
+      "relevant": [
+        "economics-gdp"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "economics-gdp-q1",
+      "text": "What does GDP measure?",
+      "relevant": [
+        "economics-gdp"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "economics-externality-q0",
+      "text": "What is a production cost borne by outsiders called?",
+      "relevant": [
+        "economics-externality"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "economics-externality-q1",
+      "text": "How can pollution illustrate an externality?",
+      "relevant": [
+        "economics-externality"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "economics-comparative-q0",
+      "text": "How does comparative advantage differ from absolute advantage?",
+      "relevant": [
+        "economics-comparative"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "economics-comparative-q1",
+      "text": "What determines comparative advantage?",
+      "relevant": [
+        "economics-comparative"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "learning-retrieval_practice-q0",
+      "text": "How can I check knowledge without rereading?",
+      "relevant": [
+        "learning-retrieval_practice"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-retrieval_practice-q1",
+      "text": "Why can familiarity hide a knowledge gap?",
+      "relevant": [
+        "learning-retrieval_practice"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-spacing-q0",
+      "text": "What schedule adjustment follows failed recall?",
+      "relevant": [
+        "learning-spacing"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-spacing-q1",
+      "text": "What is spaced practice?",
+      "relevant": [
+        "learning-spacing"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-interleaving-q0",
+      "text": "Which practice method requires choosing among solution methods?",
+      "relevant": [
+        "learning-interleaving"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-interleaving-q1",
+      "text": "How does interleaving differ from blocked practice?",
+      "relevant": [
+        "learning-interleaving"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "learning-feedback-q0",
+      "text": "Why might a score alone be insufficient feedback?",
+      "relevant": [
+        "learning-feedback"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "learning-feedback-q1",
+      "text": "What makes learning feedback actionable?",
+      "relevant": [
+        "learning-feedback"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "learning-hints-q0",
+      "text": "Should a hinted correct answer count as independent recall?",
+      "relevant": [
+        "learning-hints"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "learning-hints-q1",
+      "text": "What does success after a hint demonstrate?",
+      "relevant": [
+        "learning-hints"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "learning-metacognition-q0",
+      "text": "How can I check whether my confidence is accurate?",
+      "relevant": [
+        "learning-metacognition"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "learning-metacognition-q1",
+      "text": "What does metacognition involve?",
+      "relevant": [
+        "learning-metacognition"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "news_literacy-dates-q0",
+      "text": "Does opening a page today make its information current?",
+      "relevant": [
+        "news_literacy-dates"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-dates-q1",
+      "text": "Why separate publication date and event date?",
+      "relevant": [
+        "news_literacy-dates"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-correction-q0",
+      "text": "How should a knowledge system handle a corrected report?",
+      "relevant": [
+        "news_literacy-correction"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-correction-q1",
+      "text": "Why track versions of news stories?",
+      "relevant": [
+        "news_literacy-correction"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-attribution-q0",
+      "text": "Does quoting someone prove their claim?",
+      "relevant": [
+        "news_literacy-attribution"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-attribution-q1",
+      "text": "What does source attribution provide?",
+      "relevant": [
+        "news_literacy-attribution"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "news_literacy-correlation-q0",
+      "text": "Do two trends moving together prove causation?",
+      "relevant": [
+        "news_literacy-correlation"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "news_literacy-correlation-q1",
+      "text": "What does correlation describe?",
+      "relevant": [
+        "news_literacy-correlation"
+      ],
+      "split": "dev"
+    },
+    {
+      "id": "news_literacy-sampling-q0",
+      "text": "Can a very large survey still be biased?",
+      "relevant": [
+        "news_literacy-sampling"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "news_literacy-sampling-q1",
+      "text": "Why does a survey sampling method matter?",
+      "relevant": [
+        "news_literacy-sampling"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "news_literacy-uncertainty-q0",
+      "text": "How should a report present estimates versus confirmed observations?",
+      "relevant": [
+        "news_literacy-uncertainty"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "news_literacy-uncertainty-q1",
+      "text": "Why preserve uncertainty around a numerical estimate?",
+      "relevant": [
+        "news_literacy-uncertainty"
+      ],
+      "split": "test"
+    },
+    {
+      "id": "unanswerable-0",
+      "text": "Who founded Project Zorvia?",
+      "relevant": [],
+      "split": "test"
+    },
+    {
+      "id": "unanswerable-1",
+      "text": "What is today's exact inflation rate?",
+      "relevant": [],
+      "split": "test"
+    },
+    {
+      "id": "unanswerable-2",
+      "text": "What did I eat yesterday?",
+      "relevant": [],
+      "split": "test"
+    },
+    {
+      "id": "unanswerable-3",
+      "text": "What color are the arrows in my diagram?",
+      "relevant": [],
+      "split": "test"
+    }
+  ]
+}

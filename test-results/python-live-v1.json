@@ -1,0 +1,220 @@
+{
+  "scope": "Small synthetic development regression suite, not held-out quality evidence.",
+  "cases": [
+    {
+      "name": "invented fact",
+      "passed": true,
+      "seconds": 11.61,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+            "quote": "Project Zorvia uses a 17-day revision cycle.",
+            "title": "Zorvia",
+            "source": "Synthetic",
+            "created_at": 1792090874.0664608,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 4,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] Project Zorvia uses a 17-day revision cycle."
+      }
+    },
+    {
+      "name": "missing related fact",
+      "passed": true,
+      "seconds": 7.09,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 4,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "name": "no scoped evidence",
+      "passed": true,
+      "seconds": 0.0,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 0,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "name": "paraphrase",
+      "passed": true,
+      "seconds": 7.22,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+            "quote": "Project Zorvia uses a 17-day revision cycle.",
+            "title": "Zorvia",
+            "source": "Synthetic",
+            "created_at": 1792090874.0664608,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 4,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] Project Zorvia uses a 17-day revision cycle."
+      }
+    },
+    {
+      "name": "fiction over pretraining",
+      "passed": false,
+      "seconds": 7.21,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "name": "instruction exclusion",
+      "passed": true,
+      "seconds": 0.0,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 0,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    }
+  ],
+  "agent": {
+    "passed": true,
+    "result": {
+      "trace_id": "53139f9d-1d16-4f49-bdba-0b62a7d0106d",
+      "steps": [
+        {
+          "action": {
+            "tool": "search_memory",
+            "query": "Project Zorvia revision cycle",
+            "memory_id": "",
+            "evidence_id": "",
+            "question": ""
+          },
+          "result": [
+            {
+              "id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953:0:44",
+              "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+              "start": 0,
+              "end": 44,
+              "text": "Project Zorvia uses a 17-day revision cycle.",
+              "title": "Zorvia",
+              "source": "Synthetic",
+              "created_at": 1792090874.0664608,
+              "published_at": null,
+              "score": 0.03278688524590164
+            },
+            {
+              "id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953:45:94",
+              "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+              "start": 45,
+              "end": 94,
+              "text": "The launch code for Project Zorvia is violet-482.",
+              "title": "Zorvia",
+              "source": "Synthetic",
+              "created_at": 1792090874.0664608,
+              "published_at": null,
+              "score": 0.03225806451612903
+            },
+            {
+              "id": "fedbc776-11dd-51e1-af85-e019a7c6ba0e:0:35",
+              "memory_id": "fedbc776-11dd-51e1-af85-e019a7c6ba0e",
+              "start": 0,
+              "end": 35,
+              "text": "Tomato plants need light and water.",
+              "title": "Garden",
+              "source": "Synthetic",
+              "created_at": 1792090874.067039,
+              "published_at": null,
+              "score": 0.015873015873015872
+            },
+            {
+              "id": "49d3c667-b999-5dd3-8e8d-b7491bd13530:0:61",
+              "memory_id": "49d3c667-b999-5dd3-8e8d-b7491bd13530",
+              "start": 0,
+              "end": 61,
+              "text": "In this fictional study, France's capital is Lyon, not Paris.",
+              "title": "Fiction",
+              "source": "Synthetic",
+              "created_at": 1792090874.067422,
+              "published_at": null,
+              "score": 0.015625
+            }
+          ]
+        },
+        {
+          "action": {
+            "tool": "draft_quiz",
+            "query": "",
+            "memory_id": "",
+            "evidence_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953:0:44",
+            "question": "What is the length of the revision cycle for Project Zorvia?"
+          },
+          "result": {
+            "draft": {
+              "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+              "prompt": "What is the length of the revision cycle for Project Zorvia?",
+              "answer": "Project Zorvia uses a 17-day revision cycle."
+            },
+            "saved": false
+          }
+        },
+        {
+          "action": {
+            "tool": "finish",
+            "query": "",
+            "memory_id": "",
+            "evidence_id": "",
+            "question": ""
+          },
+          "result": "Finished; drafts require user saving."
+        }
+      ],
+      "drafts": [
+        {
+          "memory_id": "a3dccef5-be3d-5e5c-b4e4-762325ec0953",
+          "prompt": "What is the length of the revision cycle for Project Zorvia?",
+          "answer": "Project Zorvia uses a 17-day revision cycle."
+        }
+      ],
+      "stopped": "finished",
+      "saved": false
+    }
+  }
+}
