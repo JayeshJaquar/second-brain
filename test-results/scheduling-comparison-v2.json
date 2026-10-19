@@ -1,0 +1,52 @@
+{
+  "scope": "Original seeded synthetic outcomes; validates evaluation and shadow-policy wiring only. Does not measure human learning or causal scheduling benefit.",
+  "seed": 42,
+  "model_metrics": {
+    "status": "experimental",
+    "events": 500,
+    "train_events": 400,
+    "test_events": 100,
+    "split": "chronological 80/20",
+    "brier": 0.17216559546726726,
+    "baseline_brier": 0.21420624999999993,
+    "log_loss": 0.5272429312760863,
+    "baseline_log_loss": 0.6198322679468434,
+    "features": [
+      "days_since_previous_review",
+      "prior_attempts",
+      "previous_accuracy"
+    ],
+    "message": "Experimental recall estimate, not a mastery label. Held-out metrics use only earlier history.",
+    "shadow_eligible": true,
+    "shadow_gate_reasons": [],
+    "scheduling": "Shadow comparison only; the rule-based due date remains active.",
+    "target_recall": 0.8
+  },
+  "policy_comparisons": [
+    {
+      "prior_attempts": 2,
+      "previous_accuracy": 0.4,
+      "rule_after_success_days": 2,
+      "learned_shadow_days": 3
+    },
+    {
+      "prior_attempts": 5,
+      "previous_accuracy": 0.6,
+      "rule_after_success_days": 4,
+      "learned_shadow_days": 5
+    },
+    {
+      "prior_attempts": 12,
+      "previous_accuracy": 0.8,
+      "rule_after_success_days": 14,
+      "learned_shadow_days": 7
+    },
+    {
+      "prior_attempts": 20,
+      "previous_accuracy": 0.9,
+      "rule_after_success_days": 28,
+      "learned_shadow_days": 7
+    }
+  ],
+  "active_policy_changed": false
+}

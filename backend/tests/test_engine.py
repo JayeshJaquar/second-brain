@@ -79,10 +79,10 @@ def test_lexical_scope_and_missing_model(store,tmp_path):
 
 
 def test_evidence_ids_cannot_invent_text(store):
-    m=add(store); llm=StubLLM({'supported':True,'conflict':False,'evidence_ids':['E1']})
+    m=add(store); llm=StubLLM({'conflict':False,'evidence_ids':['E1']})
     result=asyncio.run(Assistant(store,Retriever(store),llm).answer('Zorvia cycle',mode='lexical'))
     assert result['citations'][0]['quote']==m['text']
-    llm=StubLLM({'supported':True,'conflict':False,'evidence_ids':['invented']})
+    llm=StubLLM({'conflict':False,'evidence_ids':['invented']})
     assert asyncio.run(Assistant(store,Retriever(store),llm).answer('Zorvia',mode='lexical'))['status']=='rejected'
 
 
@@ -92,9 +92,9 @@ def test_no_evidence_no_model_call(store):
 
 
 def test_false_support_and_conflicts(store):
-    add(store); llm=StubLLM({'supported':False,'conflict':False,'evidence_ids':[]})
+    add(store); llm=StubLLM({'conflict':False,'evidence_ids':[]})
     assert asyncio.run(Assistant(store,Retriever(store),llm).answer('Who founded Zorvia?',mode='lexical'))['status']=='abstained'
-    llm=StubLLM({'supported':True,'conflict':True,'evidence_ids':['E1']})
+    llm=StubLLM({'conflict':True,'evidence_ids':['E1']})
     assert asyncio.run(Assistant(store,Retriever(store),llm).answer('Zorvia cycle',mode='lexical'))['conflict']
 
 

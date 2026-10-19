@@ -41,7 +41,7 @@ async def main():
    report['agent']={'passed':bool(plan['drafts']) and len(plan['steps'])<=5 and not store.rows('SELECT * FROM reviews'),'result':plan}
   except Exception as e: report['agent']={'passed':False,'error':str(e)}
   store.db.close()
- (root/'test-results/python-live-v1.json').write_text(json.dumps(report,indent=2)+'\n')
+ (root/'test-results/python-live-v2.json').write_text(json.dumps(report,indent=2)+'\n')
  print('Live cases:',sum(c['passed'] for c in report['cases']),'/',len(report['cases']),'Agent:',report['agent']['passed'])
  if not all(c['passed'] for c in report['cases']) or not report['agent']['passed']: sys.exit(1)
 

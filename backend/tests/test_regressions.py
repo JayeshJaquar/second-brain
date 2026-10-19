@@ -21,7 +21,7 @@ class MutatingLLM:
  def __init__(self,store,mid):self.store=store;self.mid=mid
  async def json(self,*a,**kw):
   self.store.delete(self.mid)
-  return {'supported':True,'conflict':False,'evidence_ids':['E1']}
+  return {'conflict':False,'evidence_ids':['E1']}
 
 def test_delete_during_answer_discards_stale_evidence(store):
  m=store.add(title='Test',source='Synthetic',text='Zorvia needs 17 days.')

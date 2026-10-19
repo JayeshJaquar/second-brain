@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Original synthetic extraction fixture</title><meta property="article:published_time" content="2026-10-19"><style>.hidden{display:none}body{font:16px/1.5 system-ui;max-width:850px;margin:30px auto}textarea{width:100%;height:200px}</style></head><body>
+<header>Account settings · Subscribe</header><nav>Sports · Weather · Login</nav>
+<main><article><h1>How the Zorvia study works</h1><p>Project Zorvia reviews each lesson every 17 days.</p><p>A review begins with an independent recall attempt.</p><aside>This advertisement must not be imported.</aside><p class="hidden">The secret hidden cycle is 900 days.</p><figure><svg width="300" height="60" aria-label="Study then review"><text x="5" y="30">Study → Review</text></svg><figcaption>Study comes before review.</figcaption></figure><pre>if recalled:
+    interval *= 2</pre><p>Answers and hints are recorded after practice.</p></article></main><footer>Privacy · Terms</footer>
+<section id="test"><h2>Browser extraction check</h2><button id="run">Extract article</button><p id="result" role="status"></p><textarea id="output" readonly aria-label="Extraction result"></textarea><a id="export" hidden download="second-brain-article.json">Export fixture article</a></section>
+<script type="module">
+import {extractArticle} from './extract.js';
+document.getElementById('run').onclick=()=>{
+ const data=extractArticle();
+ const expected=['How the Zorvia study works','Project Zorvia reviews each lesson every 17 days.','A review begins with an independent recall attempt.','Study comes before review.','if recalled:\n    interval *= 2','Answers and hints are recorded after practice.'];
+ const forbidden=['advertisement','900','Account settings','Privacy','Extract article'];
+ const pass=expected.every(x=>data.text.includes(x))&&!forbidden.some(x=>data.text.includes(x));
+ document.getElementById('result').textContent=pass?'PASS: 6 content blocks retained; navigation, hidden text and controls excluded.':'FAIL: inspect the extracted text.';
+ document.getElementById('output').value=JSON.stringify(data,null,2);
+ const link=document.getElementById('export');link.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));link.hidden=false;
+};
+</script></body></html>

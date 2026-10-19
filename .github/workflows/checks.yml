@@ -19,6 +19,11 @@ jobs:
         env:
           HF_HUB_OFFLINE: '1'
         run: python -m pytest -q
+      - name: Check browser scripts
+        run: |
+          node --check backend/brain/web/studio.js
+          node --check extensions/chrome/extract.js
+          node --check extensions/chrome/popup.js
       - name: Build native app
         run: sh scripts/build-app.sh
       - name: Check native memory transfer and legacy decoding

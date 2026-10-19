@@ -1,0 +1,292 @@
+{
+  "scope": "Three original rendered diagrams and 12 authored questions. Development evaluation, not a general vision benchmark.",
+  "dataset_sha256": "d5121cdf0d0e510e15e03a1aca2e3fbf7b99aaedb04630c3005de7f1222c523b",
+  "model": "qwen2.5vl:3b",
+  "control": "Same VLM and questions; text-only receives exact authored labels, not an OCR engine. Image condition additionally receives pixels.",
+  "results": [
+    {
+      "diagram": "flow",
+      "id": "flow-1",
+      "condition": "text_only",
+      "answer": "left",
+      "gold_image_answer": "right",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-2",
+      "condition": "text_only",
+      "answer": "unknown",
+      "gold_image_answer": "blue",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-3",
+      "condition": "text_only",
+      "answer": "Output",
+      "gold_image_answer": "Output",
+      "expected_given_input": "unknown",
+      "correct": true,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-4",
+      "condition": "text_only",
+      "answer": "17 days",
+      "gold_image_answer": "17 days",
+      "expected_given_input": "17 days",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-1",
+      "condition": "image_and_text",
+      "answer": "right",
+      "gold_image_answer": "right",
+      "expected_given_input": "right",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-2",
+      "condition": "image_and_text",
+      "answer": "blue",
+      "gold_image_answer": "blue",
+      "expected_given_input": "blue",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-3",
+      "condition": "image_and_text",
+      "answer": "Output",
+      "gold_image_answer": "Output",
+      "expected_given_input": "Output",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "flow",
+      "id": "flow-4",
+      "condition": "image_and_text",
+      "answer": "17 days",
+      "gold_image_answer": "17 days",
+      "expected_given_input": "17 days",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-1",
+      "condition": "text_only",
+      "answer": "Accept",
+      "gold_image_answer": "Accept",
+      "expected_given_input": "unknown",
+      "correct": true,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-2",
+      "condition": "text_only",
+      "answer": "red",
+      "gold_image_answer": "red",
+      "expected_given_input": "unknown",
+      "correct": true,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-3",
+      "condition": "text_only",
+      "answer": "rectangle",
+      "gold_image_answer": "diamond",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-4",
+      "condition": "text_only",
+      "answer": "8",
+      "gold_image_answer": "8",
+      "expected_given_input": "8",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-1",
+      "condition": "image_and_text",
+      "answer": "Accept",
+      "gold_image_answer": "Accept",
+      "expected_given_input": "Accept",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-2",
+      "condition": "image_and_text",
+      "answer": "red",
+      "gold_image_answer": "red",
+      "expected_given_input": "red",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-3",
+      "condition": "image_and_text",
+      "answer": "diamond",
+      "gold_image_answer": "diamond",
+      "expected_given_input": "diamond",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "branch",
+      "id": "branch-4",
+      "condition": "image_and_text",
+      "answer": "8",
+      "gold_image_answer": "8",
+      "expected_given_input": "8",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-1",
+      "condition": "text_only",
+      "answer": "yes",
+      "gold_image_answer": "no",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-2",
+      "condition": "text_only",
+      "answer": "rectangle",
+      "gold_image_answer": "circle",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": false,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-3",
+      "condition": "text_only",
+      "answer": "unknown",
+      "gold_image_answer": "purple",
+      "expected_given_input": "unknown",
+      "correct": false,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-4",
+      "condition": "text_only",
+      "answer": "no",
+      "gold_image_answer": "no",
+      "expected_given_input": "no",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-1",
+      "condition": "image_and_text",
+      "answer": "no",
+      "gold_image_answer": "no",
+      "expected_given_input": "no",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-2",
+      "condition": "image_and_text",
+      "answer": "circle",
+      "gold_image_answer": "circle",
+      "expected_given_input": "circle",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-3",
+      "condition": "image_and_text",
+      "answer": "purple",
+      "gold_image_answer": "purple",
+      "expected_given_input": "purple",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": true
+    },
+    {
+      "diagram": "separate",
+      "id": "separate-4",
+      "condition": "image_and_text",
+      "answer": "no",
+      "gold_image_answer": "no",
+      "expected_given_input": "no",
+      "correct": true,
+      "appropriate_given_input": true,
+      "needs_image": false
+    }
+  ],
+  "metrics": {
+    "text_only": {
+      "questions": 12,
+      "answer_accuracy": 0.5,
+      "appropriate_response_rate": 0.4166666666666667,
+      "abstentions": 2
+    },
+    "image_and_text": {
+      "questions": 12,
+      "answer_accuracy": 1.0,
+      "appropriate_response_rate": 1.0,
+      "abstentions": 0
+    }
+  },
+  "limitations": [
+    "Twelve authored questions only; not held-out or real-world evidence.",
+    "Exact labels isolate visual information from OCR extraction quality.",
+    "Multiple choice can overestimate open-ended reasoning.",
+    "Results do not promote visual interpretations into text evidence."
+  ]
+}

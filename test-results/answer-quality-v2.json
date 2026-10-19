@@ -1,0 +1,324 @@
+{
+  "scope": "Original authored development cases. Stable IDs; not a held-out external benchmark.",
+  "dataset_sha256": "9c17787b9a2ce2674d7a01dd7995d009dfd382a32d5d59acd03caa12b81cdcfd",
+  "model": "qwen2.5:7b-instruct",
+  "cases": [
+    {
+      "id": "answer-01",
+      "expected": "supported",
+      "passed": true,
+      "seconds": 11.43,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "a080c0b2-953a-5eab-8846-643a741f8c24",
+            "quote": "In the fictional Arven atlas, the capital of France is Lyon.",
+            "title": "fiction-a",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.3025658,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] In the fictional Arven atlas, the capital of France is Lyon."
+      }
+    },
+    {
+      "id": "answer-02",
+      "expected": "supported",
+      "passed": true,
+      "seconds": 4.12,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "fd075ca8-f9c0-59f9-8e00-7e9fabeda497",
+            "quote": "In the invented Teral universe, water freezes at 12 degrees Celsius.",
+            "title": "fiction-b",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.303304,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] In the invented Teral universe, water freezes at 12 degrees Celsius."
+      }
+    },
+    {
+      "id": "answer-03",
+      "expected": "supported",
+      "passed": true,
+      "seconds": 4.31,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "cf8bd456-92c7-558c-81c7-db35780d8d57",
+            "quote": "Mira's bean plant was watered every four days.",
+            "title": "plant",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.303757,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 2,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] Mira's bean plant was watered every four days."
+      }
+    },
+    {
+      "id": "answer-04",
+      "expected": "supported",
+      "passed": true,
+      "seconds": 4.21,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "c8987b6b-f8a8-52a4-a239-498dc78b7be2",
+            "quote": "A base case terminates recursion without making another recursive call.",
+            "title": "recursion",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.304221,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] A base case terminates recursion without making another recursive call."
+      }
+    },
+    {
+      "id": "answer-05",
+      "expected": "supported",
+      "passed": true,
+      "seconds": 7.32,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "cf8bd456-92c7-558c-81c7-db35780d8d57",
+            "quote": "The pot was placed beside a window.",
+            "title": "plant",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.303757,
+            "published_at": null
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 2,
+        "claims": [],
+        "conflict": false,
+        "status": "supported",
+        "message": "Supporting excerpts from your memories:\n\n[1] The pot was placed beside a window."
+      }
+    },
+    {
+      "id": "answer-06",
+      "expected": "conflict",
+      "passed": true,
+      "seconds": 10.82,
+      "result": {
+        "citations": [
+          {
+            "id": 1,
+            "evidence_id": "E1",
+            "memory_id": "008b162d-f345-51b9-b5d6-de6fe07aae95",
+            "quote": "The Vela library opens at 9 AM.",
+            "title": "old-news",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.3046248,
+            "published_at": "2026-01-01"
+          },
+          {
+            "id": 2,
+            "evidence_id": "E2",
+            "memory_id": "9dd2a551-6b41-5dbd-8e79-3017dbd60712",
+            "quote": "The Vela library opens at 11 AM.",
+            "title": "new-news",
+            "source": "Original synthetic fixture",
+            "created_at": 1792419841.305053,
+            "published_at": "2026-02-01"
+          }
+        ],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 8,
+        "claims": [],
+        "conflict": true,
+        "status": "supported",
+        "message": "The selected sources may disagree. Compare them:\n\n[1] The Vela library opens at 9 AM.\n\n[2] The Vela library opens at 11 AM."
+      }
+    },
+    {
+      "id": "answer-07",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 6.91,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 2,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "id": "answer-08",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 0.03,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "message": "The saved text does not state that visual attribute. Inspect the original image or its separately labelled experimental interpretation.",
+        "status": "abstained"
+      }
+    },
+    {
+      "id": "answer-09",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 0.02,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "message": "The saved text does not state that visual attribute. Inspect the original image or its separately labelled experimental interpretation.",
+        "status": "abstained"
+      }
+    },
+    {
+      "id": "answer-10",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 8.2,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 8,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "id": "answer-11",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 0.0,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 0,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    },
+    {
+      "id": "answer-12",
+      "expected": "clarify",
+      "passed": true,
+      "seconds": 0.0,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 0,
+        "claims": [],
+        "conflict": false,
+        "status": "clarify",
+        "message": "What would you like to know about recursion: its definition, how it works, or an example?",
+        "suggestions": [
+          "What is recursion?",
+          "How does recursion work?",
+          "What example of recursion is in my sources?"
+        ]
+      }
+    },
+    {
+      "id": "answer-13",
+      "expected": "clarify",
+      "passed": true,
+      "seconds": 0.0,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 0,
+        "claims": [],
+        "conflict": false,
+        "status": "clarify",
+        "message": "Which topic or saved source do you mean? Include its name in your question.",
+        "suggestions": []
+      }
+    },
+    {
+      "id": "answer-14",
+      "expected": "abstained",
+      "passed": true,
+      "seconds": 5.96,
+      "result": {
+        "citations": [],
+        "warnings": [],
+        "mode": "rerank",
+        "candidate_count": 1,
+        "claims": [],
+        "conflict": false,
+        "message": "I could not find enough supporting evidence in your saved memories. Name a specific topic or add more source material.",
+        "status": "abstained"
+      }
+    }
+  ],
+  "metrics": {
+    "total": 14,
+    "passed": 14,
+    "answerable_count": 6,
+    "unanswerable_count": 6,
+    "returned_answers": 6,
+    "supported_answer_rate": 1.0,
+    "false_refusal_rate": 0.0,
+    "false_support_rate": 0.0,
+    "source_selection_precision": 1.0
+  }
+}

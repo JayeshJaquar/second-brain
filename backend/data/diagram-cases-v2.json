@@ -1,0 +1,24 @@
+{
+  "version":"2.0",
+  "scope":"Three original rendered diagrams and 12 authored questions. Development evaluation, not a general vision benchmark.",
+  "diagrams":[
+    {"id":"flow","ocr_text":"Input Encode Output Cycle repeats every 17 days","questions":[
+      {"id":"flow-1","question":"Which direction does the arrow between Input and Encode point?","choices":["left","right","unknown"],"answer":"right","needs_image":true},
+      {"id":"flow-2","question":"What color fills the Encode box?","choices":["blue","green","orange","unknown"],"answer":"blue","needs_image":true},
+      {"id":"flow-3","question":"Which box is immediately reached by following the arrow leaving Encode?","choices":["Input","Output","unknown"],"answer":"Output","needs_image":true},
+      {"id":"flow-4","question":"What cycle length is written in the caption?","choices":["7 days","17 days","27 days","unknown"],"answer":"17 days","needs_image":false}
+    ]},
+    {"id":"branch","ocr_text":"Start Check Accept Reject yes no Threshold 8","questions":[
+      {"id":"branch-1","question":"Which destination does the yes branch from Check reach?","choices":["Accept","Reject","Start","unknown"],"answer":"Accept","needs_image":true},
+      {"id":"branch-2","question":"What color fills Reject?","choices":["red","green","blue","unknown"],"answer":"red","needs_image":true},
+      {"id":"branch-3","question":"What shape contains Check?","choices":["diamond","rectangle","circle","unknown"],"answer":"diamond","needs_image":true},
+      {"id":"branch-4","question":"What threshold number is written?","choices":["3","8","18","unknown"],"answer":"8","needs_image":false}
+    ]},
+    {"id":"separate","ocr_text":"Learn Recall No timing specified","questions":[
+      {"id":"separate-1","question":"Is there an arrow connecting Learn and Recall?","choices":["yes","no","unknown"],"answer":"no","needs_image":true},
+      {"id":"separate-2","question":"Which shape contains Learn?","choices":["circle","rectangle","diamond","unknown"],"answer":"circle","needs_image":true},
+      {"id":"separate-3","question":"What color fills Recall?","choices":["purple","green","red","unknown"],"answer":"purple","needs_image":true},
+      {"id":"separate-4","question":"Does the text specify a numeric revision interval?","choices":["yes","no","unknown"],"answer":"no","needs_image":false}
+    ]}
+  ]
+}
