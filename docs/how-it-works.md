@@ -4,6 +4,7 @@
 
 ```mermaid
 flowchart LR
+ B["BROWSER IMPORT<br/>Selected article text → review"] --> N
  E["EYES<br/>Swift capture + OCR"] -->|you review and save| N[("NOTEBOOK<br/>SQLite + PNG files")]
  N --> L["LIBRARIAN<br/>Python keyword + meaning search"]
  L --> T["TUTOR<br/>Local Qwen selects source evidence"]
@@ -30,3 +31,7 @@ Example: you read “a base case stops recursion,” save it, then ask “how do
 **Where the AI concepts are:** ML = trained topic and recall classifiers; DL = trained PyTorch topic head; transformers = MiniLM encoder/cross-encoder; LLM = local Qwen; generative AI = optional explanation/quiz wording; agentic AI = model-selected bounded tools. The project trains small classifiers, not an entire foundation model.
 
 **What “learns with me” means today:** the memory collection grows, search uses it, and genuine practice history can train a small recall predictor. Qwen's weights do not change when you read a page. Saved material is not automatically up to date; importing a newer version preserves a newer source.
+
+## What changed on 19 October
+
+The Eyes now have an optional Chrome article-text path alongside native screenshot/OCR capture. The Notebook uses SQLite schema 2 and preserves extraction metadata, typed recall and corrections. The Tutor asks clarification questions, rejects bare labels as visual-attribute evidence, and checks generated claims in a second model call. The Coach shows a learned interval only as a gated comparison; the rule schedule remains active. Ad-hoc signing is retained by the user's choice.

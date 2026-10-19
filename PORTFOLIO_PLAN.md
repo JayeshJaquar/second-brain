@@ -36,8 +36,8 @@ Swift remains the appropriate native capture/client layer. Increasing Python's l
 ## Next work requiring evidence or setup
 
 1. Collect consented real questions, corrected topics and genuine practice events. Maintain a held-out evaluation set; compare topic/model changes against baselines.
-2. Fix the recorded fictional-fact false refusal without introducing false support; expand contradiction, OCR, code and adversarial cases before claiming improvement.
-3. Measure generated-claim entailment and visual relationship correctness; leave generated interpretations separate until supported by evidence.
+2. The fictional-fact false refusal now passes its regression, and 14 authored answer cases pass after fixing two OCR-only visual false-support cases. Expand independent, held-out contradiction, code and adversarial cases before claiming general improvement.
+3. Generated claims now receive a second local support check; a paired 12-question image/text experiment is recorded. Evaluate both on independent real-world material; leave generated interpretations separate.
 4. Benchmark larger libraries, then adopt FTS5 candidate generation and an approximate vector index only if the measurements justify complexity.
 5. Package the Python runtime and configure a stable signing identity for reliable installation and permission continuity. The current build assumes the checkout remains in place.
 6. Consider LoRA fine-tuning only after data quantity, consent, evaluation and hardware budget justify it. No training for keyword coverage alone.

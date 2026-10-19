@@ -4,11 +4,12 @@ A local macOS learning assistant with a **Python AI engine**, a Swift capture cl
 
 ## What works
 
+- **Article import:** the optional [Chrome extension](extensions/chrome/README.md) extracts selected/article DOM text after an explicit click. Export, import the file (or paste its JSON), review, and save in Learning Studio. It is not installed automatically.
 - **Capture:** choose a visible Mac window, preserve a PNG and Apple Vision OCR with confidence/coordinates, then review before saving. Optional 30-second sessions pause while a draft awaits review. App exclusions and stop controls are available. Capture is not automatic surveillance or full-document ingestion.
 - **Memory:** SQLite stores text, provenance, chunks, vectors, practice events and traces; hash-addressed PNGs live in a separate attachments folder. Duplicate saves are detected. Old JSON memories import once and remain as a rollback backup.
-- **Question answering:** search all saved memories, or restrict to one. BM25 and transformer embeddings can be fused, with optional cross-encoder reranking. The local LLM selects evidence IDs; the app displays exact stored excerpts with citations or abstains. Optional generated explanations have a separate warning.
+- **Question answering:** search all saved memories, or restrict to one. BM25 and transformer embeddings can be fused, with optional cross-encoder reranking. The local LLM selects evidence IDs; the app displays exact stored excerpts with citations or abstains. Broad questions offer clarification choices. Visual-attribute guards reject bare labels as color/arrow/shape evidence. Optional generated explanations receive a second local-model support check and remain explicitly fallible.
 - **Vision:** a local vision-language model proposes diagram labels and relationships. These remain unverified and are deliberately excluded from text answers.
-- **Practice:** create source-backed questions, reveal answers, record your own recall and hint use, and see due reviews. A rule-based spaced schedule works immediately; an experimental learned recall estimate requires at least 50 genuine events with both outcomes.
+- **Practice:** create source-backed questions, reveal answers, record your typed recall, hint use and corrections, and see due reviews. A rule-based spaced schedule works immediately; an experimental learned recall estimate requires at least 50 genuine events with both outcomes. A learned interval is shown only as a comparison after a ≥20-event holdout, baseline improvement and decreasing time-effect gate; active due dates remain rule-based.
 - **Agent:** a bounded model-driven loop searches memories, reads retrieved sources and proposes quiz drafts. Its tool trace is visible; a person must save a draft.
 - **ML/DL experiments:** train TF-IDF and embedding-based logistic classifiers and a PyTorch neural topic head on frozen transformer embeddings. Reproducible synthetic fixtures, splits, baselines, loss curves and evaluations are included.
 
@@ -32,7 +33,7 @@ Setup downloads Python packages and the two pinned search models. Runtime search
 
 The app starts the Python service and opens Learning Studio through **Open Learning Studio**. Alternatively, `sh scripts/start-backend.sh` starts it at `http://127.0.0.1:8765`. For manual browser login, the local token is in the private data directory; do not paste it into issues or commit it. The app transfers it using a URL fragment, which the page removes and keeps in session storage.
 
-Grant Screen Recording permission to the built app when you want capture. Ad-hoc signing can require permission renewal after rebuilding. A configured stable code-signing identity can be supplied using `SECOND_BRAIN_SIGNING_IDENTITY`; the build script does not create certificates or change trust settings. No valid identity was available on the development Mac, so this remains a setup limitation.
+Grant Screen Recording permission to the built app when you want capture. Ad-hoc signing can require permission renewal after rebuilding. A configured stable code-signing identity can be supplied using `SECOND_BRAIN_SIGNING_IDENTITY`; the build script does not create certificates or change trust settings. No valid identity was available on the development Mac. On 19 October the user chose to keep ad-hoc signing for now. The read-only readiness check is `sh scripts/check-signing.sh`; see [signing setup](docs/signing.md).
 
 ## Your data
 
@@ -63,6 +64,9 @@ python3 -m unittest discover -s research/evaluation -p 'test_*.py'
 # Explicit integration tests with local Ollama:
 .venv/bin/python backend/experiments/live_checks.py
 .venv/bin/python backend/experiments/vision_checks.py
+.venv/bin/python backend/experiments/evaluate_answers.py
+.venv/bin/python backend/experiments/evaluate_vision.py
+.venv/bin/python backend/experiments/evaluate_schedule.py
 ```
 
 `evaluate.py` also writes the optional local topic suggestion model. It is trained on tiny synthetic data and is not a reliable personal classifier. The neural head is a measured research experiment, not the production classifier. CI runs offline unit checks and the native build, not LLM downloads or live model tests.
@@ -72,9 +76,10 @@ python3 -m unittest discover -s research/evaluation -p 'test_*.py'
 - [Architecture and database](ARCHITECTURE.md)
 - [Visual explanation](docs/how-it-works.md)
 - [Engineering decision history](decisions.md)
-- [Latest results and known limitations](test-results/2026-10-16-python-engine.md)
+- [Latest results and known limitations](test-results/2026-10-19-completion-audit.md)
+- [Every requested improvement and its status](docs/improvement-status.md)
 - [Portfolio claims and next experiments](PORTFOLIO_PLAN.md)
 - [Security and privacy boundary](SECURITY.md)
 - [Contributing and validation](CONTRIBUTING.md)
 
-The current live grounding suite passes **5 of 6** checks; one supported fictional fact still causes a false refusal. The agent integration check passes. These small synthetic checks do not establish real-world accuracy. See the full reports rather than treating any single metric as an overall quality score.
+The updated live regression suite passes **6/6**, and the expanded authored answer suite passes **14/14** after a visual-attribute guard fixed two false-support cases. Both the original failure report and the new report are retained. The paired diagram experiment scored **6/12 text-only versus 12/12 with images**, using the same VLM and exact authored text. These are small development fixtures, not proof of general accuracy or zero hallucinations. See the full reports and the uninstalled-extension/signing setup boundaries.
