@@ -27,6 +27,7 @@ class MemoryInput(BaseModel):
     screenshotPNG: str | None=Field(default=None,max_length=28000000)
     kind: Literal['note','ocr','article','html']='note'
     published_at: str | None=Field(default=None,max_length=40)
+    extraction: dict=Field(default_factory=dict)
     ocr: list[dict]=Field(default_factory=list,max_length=5000)
 
 class Question(BaseModel):
@@ -42,6 +43,8 @@ class ReviewInput(BaseModel):
 class ReviewResult(BaseModel):
     correct: bool
     hints: int=Field(default=0,ge=0,le=20)
+    response: str=Field(default='',max_length=4000)
+    correction: str=Field(default='',max_length=4000)
 class Goal(BaseModel):
     goal: str=Field(min_length=1,max_length=800)
 class Topic(BaseModel):
@@ -82,7 +85,7 @@ def create_app(store=None,llm=None):
     @app.exception_handler(ValueError)
     async def invalid(request,exc): return JSONResponse({'detail':str(exc)},status_code=400)
     @app.get('/health')
-    def health(): return {'service':'second-brain','version':'0.2.0'}
+    def health(): return {'service':'second-brain','version':'0.3.0'}
     @app.get('/')
     def ui(): return FileResponse(Path(__file__).parent/'web/index.html')
     @app.get('/studio.js')
@@ -95,7 +98,8 @@ def create_app(store=None,llm=None):
     def save(data: MemoryInput):
         text=article_text(data.text) if data.kind=='html' else data.text
         memory=store.add(title=data.title,source=data.source,text=text,kind=data.kind,published_at=data.published_at,
-            image=base64.b64decode(data.screenshotPNG,validate=True) if data.screenshotPNG else None,ocr=data.ocr)
+            image=base64.b64decode(data.screenshotPNG,validate=True) if data.screenshotPNG else None,ocr=data.ocr,
+            raw_text=data.text,extraction=data.extraction)
         topic=TopicClassifier().predict(memory['text'])
         with store.lock,store.db: store.db.execute("UPDATE memories SET topic=? WHERE id=? AND topic='unclassified'",(topic,memory['id']))
         return store.memory(memory['id'])
@@ -121,7 +125,7 @@ def create_app(store=None,llm=None):
     @app.post('/api/reviews',dependencies=[Depends(auth)])
     def review(data: ReviewInput): return {'id':store.save_review(data.memory_id,data.prompt,data.answer)}
     @app.post('/api/reviews/{rid}/result',dependencies=[Depends(auth)])
-    def result(rid: str,data: ReviewResult): return store.record_review(rid,data.correct,data.hints)
+    def result(rid: str,data: ReviewResult): return store.record_review(rid,data.correct,data.hints,data.response,data.correction)
     @app.post('/api/agent',dependencies=[Depends(auth)])
     async def plan(data: Goal):
         try:
@@ -145,7 +149,7 @@ def create_app(store=None,llm=None):
         return {'deleted':len(data.ids)}
     @app.get('/api/status',dependencies=[Depends(auth)])
     def status():
-        return {'database':'SQLite + FTS5','schema':1,'memories':len(store.list()),'chunks':store.rows('SELECT count(*) AS n FROM chunks')[0]['n'],
+        return {'database':'SQLite + FTS5','schema':2,'memories':len(store.list()),'chunks':store.rows('SELECT count(*) AS n FROM chunks')[0]['n'],
             'models':retriever.manifest(),'legacy_backup':(store.root/'memories.json').exists(),
             'privacy':'Local only. No automatic URL fetching. Original JSON backup is retained. Capture permissions belong to the native app.'}
     return app

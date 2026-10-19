@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Second Brain Article Capture",
+  "version": "0.3.0",
+  "description": "Preview article text from the tab you choose, then export it for your local Second Brain.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {"default_popup": "popup.html", "default_title": "Review article for Second Brain"}
+}

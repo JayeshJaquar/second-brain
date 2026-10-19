@@ -22,7 +22,7 @@ class Store:
         self.db = sqlite3.connect(self.root / 'brain.sqlite3', check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         version=self.db.execute('PRAGMA user_version').fetchone()[0]
-        if version not in (0,1): raise ValueError('Unsupported database schema; use a compatible app version.')
+        if version not in (0,1,2): raise ValueError('Unsupported database schema; use a compatible app version.')
         self.db.execute('PRAGMA foreign_keys=ON'); self.db.execute('PRAGMA journal_mode=DELETE')
         self.db.execute('PRAGMA secure_delete=ON')
         self.db.executescript('''
@@ -46,8 +46,16 @@ class Store:
           model TEXT NOT NULL,description TEXT NOT NULL,at REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS traces(id TEXT PRIMARY KEY,at REAL NOT NULL,data TEXT NOT NULL);
         ''')
-        self.db.execute("INSERT OR IGNORE INTO meta VALUES('schema_version','1')"); self.db.commit()
-        self.db.execute('PRAGMA user_version=1')
+        # Additive migration keeps existing memories and practice history intact.
+        columns={row[1] for row in self.db.execute('PRAGMA table_info(memories)')}
+        if 'extraction_json' not in columns:
+            self.db.execute("ALTER TABLE memories ADD COLUMN extraction_json TEXT NOT NULL DEFAULT '{}'")
+        event_columns={row[1] for row in self.db.execute('PRAGMA table_info(events)')}
+        for name in ['response','correction']:
+            if name not in event_columns:
+                self.db.execute(f"ALTER TABLE events ADD COLUMN {name} TEXT NOT NULL DEFAULT ''")
+        self.db.execute("INSERT OR REPLACE INTO meta VALUES('schema_version','2')")
+        self.db.execute('PRAGMA user_version=2'); self.db.commit()
         os.chmod(self.root / 'brain.sqlite3', 0o600)
         tokenfile = self.root / 'backend.token'
         if not tokenfile.exists():
@@ -58,7 +66,7 @@ class Store:
     def rows(self, sql, args=()):
         with self.lock: return [dict(r) for r in self.db.execute(sql, args)]
 
-    def add(self, *, title, source, text, image=None, kind='note', published_at=None, ocr=None, id=None, created_at=None):
+    def add(self, *, title, source, text, image=None, kind='note', published_at=None, ocr=None, id=None, created_at=None, raw_text=None, extraction=None):
         if not text.strip() and not image: raise ValueError('A memory needs text or an image.')
         image_hash = None; created_file = False
         if image:
@@ -79,8 +87,8 @@ class Store:
                 created_file = True
             try:
                 with self.db:
-                    self.db.execute('INSERT INTO memories(id,title,source,created_at,published_at,raw_text,text,kind,image,ocr_json,hash,screened) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
-                        (mid,title,source,created_at or time.time(),published_at,text,text_clean,kind,image_hash,json.dumps(ocr or []),fingerprint,bool(OVERRIDES.search(text))))
+                    self.db.execute('INSERT INTO memories(id,title,source,created_at,published_at,raw_text,text,kind,image,ocr_json,hash,screened,extraction_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                        (mid,title,source,created_at if created_at is not None else time.time(),published_at,raw_text if raw_text is not None else text,text_clean,kind,image_hash,json.dumps(ocr or []),fingerprint,bool(OVERRIDES.search(text)),json.dumps(extraction or {})))
                     for start,end,part in units(text_clean):
                         cid = f'{mid}:{start}:{end}'
                         self.db.execute('INSERT INTO chunks VALUES(?,?,?,?,?)',(cid,mid,start,end,part))
@@ -96,6 +104,7 @@ class Store:
         if not rows: raise KeyError(mid)
         result = rows[0]; result['has_image'] = bool(result.pop('image'))
         result['ocr'] = json.loads(result.pop('ocr_json')); result.pop('hash')
+        result['extraction'] = json.loads(result.pop('extraction_json'))
         return result
 
     def list(self):
@@ -143,7 +152,7 @@ class Store:
         with self.lock, self.db: self.db.execute('INSERT INTO reviews(id,memory_id,prompt,answer,due) VALUES(?,?,?,?,?)',(rid,mid,prompt,answer,time.time()))
         return rid
 
-    def record_review(self, rid, correct, hints):
+    def record_review(self, rid, correct, hints, response="", correction=""):
         with self.lock:
             rows = self.rows('SELECT * FROM reviews WHERE id=?',(rid,))
             if not rows: raise KeyError(rid)
@@ -154,8 +163,8 @@ class Store:
             independent = bool(correct and not hints)
             interval = min(90,review['interval']*2) if independent else 1
             with self.db:
-                self.db.execute('INSERT INTO events(review_id,at,correct,hints,elapsed,prior,previous_accuracy) VALUES(?,?,?,?,?,?,?)',
-                    (rid,now,independent,hints,elapsed,len(events),accuracy))
+                self.db.execute('INSERT INTO events(review_id,at,correct,hints,elapsed,prior,previous_accuracy,response,correction) VALUES(?,?,?,?,?,?,?,?,?)',
+                    (rid,now,independent,hints,elapsed,len(events),accuracy,response,correction))
                 self.db.execute('UPDATE reviews SET due=?,interval=? WHERE id=?',(now+interval*86400,interval,rid))
             return {'interval_days':interval,'independent_recall':independent}
 

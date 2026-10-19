@@ -26,21 +26,49 @@ def units(text: str, maximum: int = 900):
 
 
 class ArticleParser(HTMLParser):
-    """Explicit HTML imports only: no scripts, resource loading, or arbitrary URL fetching."""
+    """Parse inert HTML; prefer semantic article/main content. No resource loading."""
+    VOID = {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
+    SKIP = {'script','style','nav','footer','aside','form','button','noscript','template'}
+    BLOCK = {'p','div','li','h1','h2','h3','h4','section','article','main','pre','br','tr'}
+
     def __init__(self):
-        super().__init__(); self.hidden = 0; self.parts = []
+        super().__init__(convert_charrefs=True)
+        self.root = {'tag':'root','attrs':{},'children':[]}
+        self.stack = [self.root]
+        self.candidates = []
+
     def handle_starttag(self, tag, attrs):
-        if tag in {"script", "style", "nav", "footer", "header"}: self.hidden += 1
-        if not self.hidden and tag in {"p", "div", "li", "h1", "h2", "br"}: self.parts.append("\n")
+        node = {'tag':tag,'attrs':dict(attrs),'children':[]}
+        self.stack[-1]['children'].append(node)
+        if tag not in self.VOID: self.stack.append(node)
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID: self.handle_endtag(tag)
+
     def handle_endtag(self, tag):
-        if tag in {"script", "style", "nav", "footer", "header"}: self.hidden = max(0, self.hidden - 1)
-    def handle_data(self, data):
-        if not self.hidden: self.parts.append(data)
+        for i in range(len(self.stack)-1,0,-1):
+            if self.stack[i]['tag']==tag:
+                del self.stack[i:]; break
+
+    def handle_data(self, data): self.stack[-1]['children'].append(data)
+
+    def render(self, node, fallback=False):
+        if isinstance(node,str): return node
+        attrs=node['attrs']; tag=node['tag']
+        if tag in self.SKIP or 'hidden' in attrs or attrs.get('aria-hidden')=='true': return ''
+        if fallback and tag=='header': return ''
+        if re.search(r'display\s*:\s*none|visibility\s*:\s*hidden',attrs.get('style',''),re.I): return ''
+        text=''.join(self.render(child,fallback) for child in node['children'])
+        if tag in {'article','main'} or attrs.get('role')=='main': self.candidates.append(text)
+        return ('\n'+text+'\n') if tag in self.BLOCK else text
 
 
 def article_text(html: str) -> str:
-    parser = ArticleParser(); parser.feed(html)
-    return re.sub(r"\n\s*\n+", "\n", "".join(parser.parts)).strip()
+    parser=ArticleParser(); parser.feed(html); parser.close()
+    all_text=parser.render(parser.root)
+    text=max(parser.candidates,key=len) if parser.candidates else parser.render(parser.root,True)
+    return re.sub(r'\n[ \t]*\n+', '\n', text).strip()
 
 
 def digest(*parts: str) -> str:

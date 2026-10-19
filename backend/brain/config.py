@@ -6,4 +6,4 @@ DATA = Path(os.environ.get("SECOND_BRAIN_DATA", str(Path.home() / "Library/Appli
 MODELS = ROOT / ".models"
 TEXT_MODEL = "qwen2.5:7b-instruct"
 VISION_MODEL = "qwen2.5vl:3b"
-PORT = 8765
+PORT = int(os.environ.get("SECOND_BRAIN_PORT", "8765"))

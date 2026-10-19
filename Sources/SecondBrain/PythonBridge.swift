@@ -33,7 +33,7 @@ struct BackendAnswer: Decodable {
         guard let (data, response) = try? await session.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 200,
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return false }
-        return object["service"] == "second-brain" && object["version"] == "0.2.0"
+        return object["service"] == "second-brain" && object["version"] == "0.3.0"
     }
     func connect() async throws {
         if await healthy() { return }
