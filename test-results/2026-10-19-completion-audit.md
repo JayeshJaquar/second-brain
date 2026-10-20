@@ -34,7 +34,7 @@ The exact Chrome extraction function was tested on an original page: six intende
 
 The rebuilt native app started successfully against SQLite schema 2; all three existing memories remained and the personal practice-event count remained zero. A live Studio explanation correctly stated the 17-day cycle with its citation and support-check warning.
 
-The optional Chrome extension is supplied but not installed. Its permission/install lifecycle remains a manual activation smoke check. Code-signing readiness found zero valid identities; the user chose to retain ad-hoc signing, so no Keychain trust or certificate changes were made.
+Activation update, 20 October: the user reported loading the optional Chrome extension. The original fixture was opened successfully in Chrome for the installed-popup check; its outcome is awaiting user confirmation. This is distinct from the already completed extraction-function and Studio import tests. Code-signing readiness found zero valid identities; the user chose to retain ad-hoc signing, so no Keychain trust or certificate changes were made.
 
 ## Reproduce and inspect
 
