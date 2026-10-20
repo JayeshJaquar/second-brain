@@ -1,0 +1,9 @@
+{
+  "sha256": "5c89bf15b3e28260717f064186dca42cfaf00d41fb805fed1ef43bc0292b09e0",
+  "baseline_commit": "18e9e59",
+  "frozen_on": "2026-10-20",
+  "test_cases": 24,
+  "development_cases": 6,
+  "rule": "Never edit this version after evaluating it. Future corrections create a new version and preserve reports.",
+  "independent_human_review": false
+}
