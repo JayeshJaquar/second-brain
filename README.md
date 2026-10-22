@@ -2,11 +2,19 @@
 
 A local macOS learning assistant with a **Python AI engine**, a Swift capture client, and a browser-based Learning Studio. Save material you read, ask questions across your memories, inspect source excerpts, and practise recall. No paid AI APIs or cloud inference are required.
 
+## Milestone 0.4 — inspectable answers and measured retrieval
+
+Learning Studio now includes **Inspect cited passage** (exact text plus matching screenshot OCR lines), **Evidence lab** (scores and individual failed cases), and background semantic indexing. Newly saved text is immediately available to keyword search; indexing status and retry are in Storage & privacy.
+
+On 5,000 original synthetic memories, warm p95 retrieval fell from **71.8 → 11.0 ms** for keyword search, **127.1 → 28.6 ms** for dense search, and **131.0 → 33.1 ms** for hybrid search. These are retrieval timings on one Mac, not end-to-end answer timings.
+
+The new frozen source-disjoint evaluation scored **19/24 strict test passes**, with **one unsupported answer out of six missing-evidence cases**. All annotated answer passages were retrieved within the top five on this small set; evidence selection still failed. We publish the failures rather than tuning on the test set. The fixtures are agent-authored, **not independently human-reviewed**. Read the [milestone report](test-results/2026-10-22-milestone.md) and [evaluation protocol](docs/evaluation-protocol.md).
+
 ## What works
 
 - **Article import:** the optional [Chrome extension](extensions/chrome/README.md) extracts selected/article DOM text after an explicit click. Export, import the file (or paste its JSON), review, and save in Learning Studio. It is not installed automatically.
 - **Capture:** choose a visible Mac window, preserve a PNG and Apple Vision OCR with confidence/coordinates, then review before saving. Optional 30-second sessions pause while a draft awaits review. App exclusions and stop controls are available. Capture is not automatic surveillance or full-document ingestion.
-- **Memory:** SQLite stores text, provenance, chunks, vectors, practice events and traces; hash-addressed PNGs live in a separate attachments folder. Duplicate saves are detected. Old JSON memories import once and remain as a rollback backup.
+- **Memory:** SQLite FTS5 indexes keyword candidates; a background worker encodes missing passages in bounded batches. Revision-keyed vectors are cached for search and invalidated after library/index changes. SQLite stores text, provenance, chunks, vectors, practice events and traces; hash-addressed PNGs live in a separate attachments folder. Duplicate saves are detected. Old JSON memories import once and remain as a rollback backup.
 - **Question answering:** search all saved memories, or restrict to one. BM25 and transformer embeddings can be fused, with optional cross-encoder reranking. The local LLM selects evidence IDs; the app displays exact stored excerpts with citations or abstains. Broad questions offer clarification choices. Visual-attribute guards reject bare labels as color/arrow/shape evidence. Optional generated explanations receive a second local-model support check and remain explicitly fallible.
 - **Vision:** a local vision-language model proposes diagram labels and relationships. These remain unverified and are deliberately excluded from text answers.
 - **Practice:** create source-backed questions, reveal answers, record your typed recall, hint use and corrections, and see due reviews. A rule-based spaced schedule works immediately; an experimental learned recall estimate requires at least 50 genuine events with both outcomes. A learned interval is shown only as a comparison after a ≥20-event holdout, baseline improvement and decreasing time-effect gate; active due dates remain rule-based.
@@ -71,15 +79,28 @@ python3 -m unittest discover -s research/evaluation -p 'test_*.py'
 
 `evaluate.py` also writes the optional local topic suggestion model. It is trained on tiny synthetic data and is not a reliable personal classifier. The neural head is a measured research experiment, not the production classifier. CI runs offline unit checks and the native build, not LLM downloads or live model tests.
 
+### Reproduce milestone 0.4
+
+```sh
+# These commands refuse to overwrite an existing report. Pick fresh paths for reruns.
+HF_HUB_OFFLINE=1 .venv/bin/python backend/experiments/milestone_benchmark.py --output /tmp/second-brain-quality-new.json
+HF_HUB_OFFLINE=1 .venv/bin/python backend/experiments/retrieval_performance.py --output /tmp/second-brain-performance-new.json
+# Disposable UI fixture at 127.0.0.1:8767; never opens the personal library:
+.venv/bin/python scripts/serve-milestone-demo.py
+```
+
+For the disposable demo only, open `http://127.0.0.1:8767/#token=synthetic-milestone-demo-only`. The fixed token has no access to your personal service. Stop the demo with Ctrl-C. Use Open Learning Studio from the Mac app for your actual library. Restart the Mac app after updating from an older engine version; rebuilding still uses your chosen ad-hoc signing.
+
 ## Evidence and navigation
 
 - [Architecture and database](ARCHITECTURE.md)
 - [Visual explanation](docs/how-it-works.md)
 - [Engineering decision history](decisions.md)
-- [Latest results and known limitations](test-results/2026-10-19-completion-audit.md)
+- [Latest milestone results and known failures](test-results/2026-10-22-milestone.md)
+- [Previous improvement audit](test-results/2026-10-19-completion-audit.md)
 - [Every requested improvement and its status](docs/improvement-status.md)
 - [Portfolio claims and next experiments](PORTFOLIO_PLAN.md)
 - [Security and privacy boundary](SECURITY.md)
 - [Contributing and validation](CONTRIBUTING.md)
 
-The updated live regression suite passes **6/6**, and the expanded authored answer suite passes **14/14** after a visual-attribute guard fixed two false-support cases. Both the original failure report and the new report are retained. The paired diagram experiment scored **6/12 text-only versus 12/12 with images**, using the same VLM and exact authored text. These are small development fixtures, not proof of general accuracy or zero hallucinations. See the [full audit](docs/improvement-status.md) for extension activation verification and the deliberately deferred stable-signing setup.
+The earlier 0.3 live regression suite passes **6/6**, and the expanded authored answer suite passes **14/14** after a visual-attribute guard fixed two false-support cases. Both the original failure report and the new report are retained. The paired diagram experiment scored **6/12 text-only versus 12/12 with images**, using the same VLM and exact authored text. These are small development fixtures, not proof of general accuracy or zero hallucinations. See the [full audit](docs/improvement-status.md) for extension activation verification and the deliberately deferred stable-signing setup.

@@ -4,7 +4,10 @@
 flowchart TD
     C[SwiftUI: choose window and review capture] -->|authenticated local API| I[Python ingestion]
     W[Learning Studio: pasted article or note] --> I
-    I --> D[(SQLite)]
+    I --> D[(SQLite + FTS5)]
+    D --> BG[Background embedding batches]
+    BG --> VS[Revision-keyed vector snapshot]
+    VS --> R
     I --> P[PNG attachments]
     Q[Your question] --> R[BM25 + MiniLM embeddings]
     D --> R
@@ -34,7 +37,7 @@ flowchart TD
 | --- | --- |
 | `memories` | Stable UUID, original/cleaned text, source/title, extraction metadata, capture and optional publication time, kind, image hash, OCR regions, topic, screening flag |
 | `chunks` | Source sentence spans and offsets, linked to a memory |
-| `chunks_fts` | FTS5 mirror of chunks, kept in sync for future indexed lookup |
+| `chunks_fts` | Indexed keyword candidate lookup and SQLite BM25 ranking; deletion trigger removes stale entries |
 | `embeddings` | Chunk vector plus model revision; vectors are stored as binary values |
 | `reviews` | User-approved question, exact source answer, interval and due time |
 | `events` | Recall outcome, hint use, elapsed days and prior-history features, typed recall and correction text |
@@ -44,7 +47,7 @@ flowchart TD
 
 Schema version 2 adds extraction provenance and optional typed-answer/correction columns to version 1 without replacing existing rows. It uses `PRAGMA user_version`, foreign keys and cascading deletion. WAL is not enabled; secure deletion is requested. A process lock protects the shared SQLite connection. Identical images share a hash-named attachment. A memory deletion removes unreferenced images and clears traces. The legacy JSON is deliberately retained after an idempotent migration; deletion is not a guarantee of erasure from backups or SSD storage.
 
-**Search implementation detail:** current BM25 scoring scans candidates in Python; the FTS5 mirror is maintained but is not yet used to accelerate query ranking. Dense vectors are also scanned in process. This keeps a small local library simple; larger collections need measured indexing changes, not a claim of unlimited scale.
+**Search implementation detail (0.4):** SQLite FTS5 performs keyword candidate lookup with quoted query tokens, memory-scope and screening filters. Its tokenization/statistics differ from the historical Python BM25 baseline. A lifecycle-managed worker encodes missing passages in batches of 16 after startup or saving; model loading/encoding never holds the database lock. Short writes check that chunks still exist, preventing resurrection after deletion. Queries encode only the question. A generation/model/index-revision keyed snapshot caches source metadata and the dense matrix. Query/model work happens outside the storage lock, and changed libraries invalidate results. A partially built index produces explicit warnings; no indexed passages falls back to keyword search. Errors are visible with retry, and startup resumes missing batches. Dense scoring remains exact and linear, with in-process sorting; there is no approximate vector index or unlimited-scale claim. The shared model lock can still delay a query behind one embedding batch. The original `lexical` implementation remains only as a comparison baseline.
 
 ## Question path and hallucination controls
 
@@ -54,6 +57,7 @@ Schema version 2 adds extraction provenance and optional typed-answer/correction
 4. Reject unknown IDs. Return original stored text, source metadata and timestamps. Offer clarification choices for general topic requests and missing referents. Before evidence selection, a conservative attribute guard excludes passages that do not even state the requested color, connection or shape; label order alone is not structure. These admission rules do not prove relevance.
 5. If requested, generate a separately labelled interpretation with citation IDs. IDs are validated and a second local-model call checks claims against their cited excerpts. Unaccepted claims are withheld. Both calls use the same fallible model: semantic entailment and factual truth are **not proven**.
 6. Discard the answer if memories change during generation, preventing stale cited answers after deletion.
+7. Citation IDs include persistent chunk IDs and offsets. The authenticated passage endpoint checks chunk ownership and text equality, then returns before/highlight/after segments (avoiding Python/JavaScript Unicode-offset differences). Screenshot boxes map exact surviving OCR lines to Apple Vision coordinates, converted to top-origin; invalid or unmatched boxes are omitted. This locates evidence, not its truth.
 
 These controls prevent fabricated quote text in the default response, but cannot guarantee selection relevance, source truth, conflict detection or recall. Pattern screening can miss attacks or block legitimate security articles. The user can inspect original OCR and images. Source content has no authority to grant tools or permissions.
 
@@ -70,3 +74,7 @@ The agent makes at most five model-selected actions from `search_memory`, `read_
 The versioned corpus contains 36 original synthetic documents across six topics. Concept groups separate 18 training, 6 development and 12 test documents. Retrieval is measured on 24 answerable test queries against the corpus; missing-answer behaviour is tested separately.
 
 Experiments compare TF-IDF logistic regression, logistic regression over frozen transformer embeddings, and a trained PyTorch 384→64→6 head with dropout and AdamW. Development loss controls early stopping; test data does not choose hyperparameters. The transformer and Qwen weights are pretrained, not trained by this project. Personal fine-tuning needs an appropriately consented dataset and a baseline comparison before it is justified.
+
+## Milestone evaluation and inspection
+
+The 0.4 Evidence lab loads only two fixed public fixture reports, behind the normal local authentication. It does not execute experiments or inspect personal memories. A hash-frozen dataset committed before implementation has 6 development and 24 test questions over disjoint source pools. Reports include exact gold-excerpt matching, missing-evidence answers, refusals, retrieval baselines and latency. The first test run passed 19/24, including one unsupported answer; results were not used to tune the model in this milestone. See `docs/evaluation-protocol.md`. The fixture is agent-authored, not independent human evaluation.

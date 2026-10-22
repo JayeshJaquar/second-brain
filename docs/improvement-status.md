@@ -1,4 +1,4 @@
-# Requested improvement audit — updated 20 October 2026
+# Requested improvement audit — updated 22 October 2026
 
 This tracks both lists the user selected. “Implemented” describes code and the stated tests; it does not imply all setup is activated or that model quality is proven outside the fixtures.
 
@@ -16,8 +16,8 @@ This tracks both lists the user selected. “Implemented” describes code and t
 
 | Area | Implemented and tested | Remaining boundary |
 | --- | --- | --- |
-| Semantic search | BM25 + transformer embeddings, reciprocal-rank fusion, optional cross-encoder, selectable baselines | Small synthetic comparison; FTS5 mirror exists but current scoring scans candidates |
-| Answer quality | Clarification patterns and choices, exact evidence selection, original citations, optional claim-by-claim support check, explicit refusals and conflicts | Same-model check can fail; rules are conservative heuristics; no hallucination-free claim |
+| Semantic search | BM25 + transformer embeddings, reciprocal-rank fusion, optional cross-encoder, selectable baselines | FTS5 keyword lookup and background/cached dense retrieval shipped in 0.4; dense scoring remains linear. Synthetic 5,000-memory comparison excludes LLM/image workloads. |
+| Answer quality | Clarification patterns and choices, exact evidence selection, original citations, optional claim-by-claim support check, explicit refusals and conflicts | Exact citation inspection added in 0.4. Frozen test: 19/24 strict passes, one unsupported answer; same-model checks and conflict flags remain fallible. |
 | Storage | SQLite + PNG attachments, idempotent legacy import, schema-2 migration, indexes/vectors and deletion cascades | Backups/exports remain; no app-level encryption; scale check excludes dense/image/concurrent workloads |
 | Ingestion | Optional click-triggered Chrome DOM extraction, article/main HTML preference, review-only import, raw input and extraction metadata, existing OCR boxes/confidence | User reports the extension is loaded and confirmed its popup retains the 17-day fact and excludes the advertisement on the original fixture (20 October). Browser extraction tested on an original page; automated file chooser was blocked by the controlling extension, so export→paste preview→save was tested instead. Native screenshot capture still requires macOS permission. |
 | Visual understanding | Local VLM; 3 labeled diagrams, 12 questions; paired exact-text versus text+image conditions | 6/12 text-only vs 12/12 image answers on these authored fixtures only. Interpretation is kept separate from grounded text evidence. |
@@ -38,3 +38,7 @@ This tracks both lists the user selected. “Implemented” describes code and t
 9. On 20 October, recorded the user's extension installation report and opened the original article in Chrome for a manual popup check. The user confirmed the expected preview. Installation, extraction-function tests and user-confirmed popup verification are tracked separately.
 
 Code verification: [GitHub checks passed for `9a845b7`](https://github.com/JayeshJaquar/second-brain/actions/runs/39270348864). The 20 October follow-up changes documentation only.
+
+## Milestone 0.4
+
+The next milestone adds the hash-frozen source-disjoint evaluation, exact citation/OCR-region inspection, background indexing and FTS5 lookup. Evidence lab shows failures as well as metrics. See [the report](../test-results/2026-10-22-milestone.md) for results and [the protocol](evaluation-protocol.md) for the boundary between a held-out fixture and independent human validation. Existing 0.3 reports above remain historical evidence.

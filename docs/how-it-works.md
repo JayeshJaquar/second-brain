@@ -35,3 +35,7 @@ Example: you read “a base case stops recursion,” save it, then ask “how do
 ## What changed on 19 October
 
 The Eyes now have an optional Chrome article-text path alongside native screenshot/OCR capture. The Notebook uses SQLite schema 2 and preserves extraction metadata, typed recall and corrections. The Tutor asks clarification questions, rejects bare labels as visual-attribute evidence, and checks generated claims in a second model call. The Coach shows a learned interval only as a gated comparison; the rule schedule remains active. Ad-hoc signing is retained by the user's choice.
+
+## What changed in milestone 0.4
+
+The Notebook now has a keyword index and prepares meaning vectors in the background. The Librarian reuses a cached vector snapshot instead of rereading/rebuilding it for every question. The Tutor's citations open the exact highlighted text and, when reliable coordinates exist, the matching screenshot line. Evidence lab is the team's report card: it deliberately shows failed questions beside scores. Its new test scored 19/24; that result is evidence of remaining limitations, not a promise that every answer is correct.
