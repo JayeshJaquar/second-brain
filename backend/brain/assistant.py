@@ -78,6 +78,7 @@ class Assistant:
         for key in dict.fromkeys(selected.evidence_ids):
             row=evidence[key]
             citations.append({'id':len(citations)+1,'evidence_id':key,'memory_id':row['memory_id'],'quote':row['text'],
+                'chunk_id':row['id'],'start':row['start'],'end':row['end'],
                 'title':row['title'],'source':row['source'],'created_at':row['created_at'],'published_at':row['published_at']})
         lead='The selected sources may disagree. Compare them:' if selected.conflict else 'Supporting excerpts from your memories:'
         result=dict(base,status='supported',conflict=selected.conflict,citations=citations,

@@ -2,6 +2,7 @@ import base64
 import hashlib
 import io
 import json
+import math
 import os
 import secrets
 import sqlite3
@@ -45,6 +46,7 @@ class Store:
         CREATE TABLE IF NOT EXISTS vision(memory_id TEXT PRIMARY KEY REFERENCES memories(id) ON DELETE CASCADE,
           model TEXT NOT NULL,description TEXT NOT NULL,at REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS traces(id TEXT PRIMARY KEY,at REAL NOT NULL,data TEXT NOT NULL);
+        CREATE INDEX IF NOT EXISTS chunks_memory ON chunks(memory_id);
         ''')
         # Additive migration keeps existing memories and practice history intact.
         columns={row[1] for row in self.db.execute('PRAGMA table_info(memories)')}
@@ -110,6 +112,34 @@ class Store:
     def list(self):
         return self.rows('SELECT id,title,source,created_at,published_at,text,kind,(image IS NOT NULL) AS has_image,screened,topic FROM memories ORDER BY created_at DESC')
 
+    def passage(self, mid, chunk_id):
+        with self.lock:
+            memory=self.memory(mid)
+            rows=self.rows('SELECT * FROM chunks WHERE id=? AND memory_id=?',(chunk_id,mid))
+            if not rows: raise KeyError(chunk_id)
+            chunk=rows[0]; start,end=chunk['start'],chunk['end']; text=memory['text']
+            if text[start:end]!=chunk['text']: raise ValueError('Stored passage no longer matches its source.')
+        regions=[]; cursor=0
+        # Native OCR is ordered and joined with newlines. Map only exact surviving text.
+        # A region covers a recognized line, not necessarily the precise glyphs of a quote.
+        for region in memory['ocr']:
+            value=region.get('text')
+            if not isinstance(value,str) or not value: continue
+            pos=text.find(value,cursor)
+            if pos<0: continue
+            cursor=pos+len(value)
+            if cursor<=start or pos>=end: continue
+            try:
+                x,y,w,h=[float(region[k]) for k in ('x','y','width','height')]
+                confidence=float(region['confidence'])
+            except (KeyError,ValueError,TypeError): continue
+            if not all(math.isfinite(v) for v in (x,y,w,h,confidence)): continue
+            if not (0<=x<=1 and 0<=y<=1 and 0<w<=1 and 0<h<=1 and x+w<=1.000001 and y+h<=1.000001 and 0<=confidence<=1): continue
+            regions.append(dict(text=value,x=x,top=max(0,1-y-h),width=w,height=h,confidence=confidence))
+        return dict(chunk_id=chunk_id,memory_id=mid,start=start,end=end,
+                    before=text[:start],highlight=text[start:end],after=text[end:],regions=regions,
+                    coordinate_note='Boxes show exact-text-matched OCR lines, not verified diagram relationships.')
+
     def image_path(self, mid):
         rows = self.rows('SELECT image FROM memories WHERE id=?',(mid,))
         if not rows or not rows[0]['image']: raise KeyError(mid)
@@ -144,6 +174,17 @@ class Store:
 
     def candidates(self, memory_id=None):
         return self.rows('SELECT c.*,m.title,m.source,m.created_at,m.published_at FROM chunks c JOIN memories m ON m.id=c.memory_id WHERE m.screened=0' + (' AND m.id=?' if memory_id else ''), (memory_id,) if memory_id else ())
+
+    def keyword_candidates(self, tokens, memory_id=None, limit=30):
+        """Quoted tokens cannot become FTS operators. FTS5 ranks lower scores first."""
+        if not tokens: return []
+        query=' OR '.join('"'+t.replace('"','""')+'"' for t in sorted(set(tokens))[:64])
+        return self.rows(
+            'SELECT c.*,m.title,m.source,m.created_at,m.published_at,-bm25(chunks_fts) AS score '
+            'FROM chunks_fts JOIN chunks c ON c.id=chunks_fts.id JOIN memories m ON m.id=c.memory_id '
+            'WHERE chunks_fts MATCH ? AND m.screened=0'+(' AND m.id=?' if memory_id else '')+
+            ' ORDER BY bm25(chunks_fts),c.id LIMIT ?',
+            (query,memory_id,limit) if memory_id else (query,limit))
 
     def save_review(self, mid, prompt, answer):
         memory = self.memory(mid)

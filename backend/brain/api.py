@@ -3,13 +3,14 @@ import base64
 import hmac
 import json
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 from fastapi import FastAPI, Depends, Header, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field, ConfigDict
-from .config import DATA, PORT
+from .config import DATA, PORT, ROOT
 from .store import Store
 from .retrieval import Retriever
 from .assistant import Assistant
@@ -57,7 +58,12 @@ class Retention(BaseModel):
 def create_app(store=None,llm=None):
     store=store or Store(DATA); store.migrate_legacy()
     retriever=Retriever(store); llm=llm or LocalLLM(); assistant=Assistant(store,retriever,llm); agent=Agent(store,retriever,llm)
-    app=FastAPI(title='Second Brain local engine',docs_url=None,redoc_url=None,openapi_url=None)
+    @asynccontextmanager
+    async def lifespan(app):
+        retriever.start()
+        try: yield
+        finally: await asyncio.to_thread(retriever.close)
+    app=FastAPI(title='Second Brain local engine',docs_url=None,redoc_url=None,openapi_url=None,lifespan=lifespan)
     app.state.store=store; app.state.retriever=retriever
     app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost'])
     gate=asyncio.Semaphore(1)
@@ -85,7 +91,7 @@ def create_app(store=None,llm=None):
     @app.exception_handler(ValueError)
     async def invalid(request,exc): return JSONResponse({'detail':str(exc)},status_code=400)
     @app.get('/health')
-    def health(): return {'service':'second-brain','version':'0.3.0'}
+    def health(): return {'service':'second-brain','version':'0.4.0'}
     @app.get('/')
     def ui(): return FileResponse(Path(__file__).parent/'web/index.html')
     @app.get('/studio.js')
@@ -102,9 +108,12 @@ def create_app(store=None,llm=None):
             raw_text=data.text,extraction=data.extraction)
         topic=TopicClassifier().predict(memory['text'])
         with store.lock,store.db: store.db.execute("UPDATE memories SET topic=? WHERE id=? AND topic='unclassified'",(topic,memory['id']))
+        retriever.request_index()
         return store.memory(memory['id'])
     @app.get('/api/memories/{mid}',dependencies=[Depends(auth)])
     def memory(mid: str): return store.memory(mid)
+    @app.get('/api/memories/{mid}/passage',dependencies=[Depends(auth)])
+    def passage(mid: str,chunk_id: str): return store.passage(mid,chunk_id)
     @app.get('/api/memories/{mid}/image',dependencies=[Depends(auth)])
     def image(mid: str): return FileResponse(store.image_path(mid),media_type='image/png')
     @app.delete('/api/memories/{mid}',dependencies=[Depends(auth)])
@@ -150,6 +159,19 @@ def create_app(store=None,llm=None):
     @app.get('/api/status',dependencies=[Depends(auth)])
     def status():
         return {'database':'SQLite + FTS5','schema':2,'memories':len(store.list()),'chunks':store.rows('SELECT count(*) AS n FROM chunks')[0]['n'],
-            'models':retriever.manifest(),'legacy_backup':(store.root/'memories.json').exists(),
+            'models':retriever.manifest(),'indexing':retriever.status(),'legacy_backup':(store.root/'memories.json').exists(),
             'privacy':'Local only. No automatic URL fetching. Original JSON backup is retained. Capture permissions belong to the native app.'}
+    @app.post('/api/index/retry',dependencies=[Depends(auth)])
+    def retry_index():
+        retriever.request_index()
+        return {'queued':True,'indexing':retriever.status()}
+    @app.get('/api/evaluation',dependencies=[Depends(auth)])
+    def evaluation():
+        # Fixed public fixture reports only: no arbitrary paths and no personal data.
+        result={}
+        for key,name in [('quality','milestone-v3-results.json'),('performance','retrieval-performance-v3.json')]:
+            path=ROOT/'test-results'/name
+            try: result[key]=json.loads(path.read_text())
+            except (FileNotFoundError,json.JSONDecodeError): result[key]=None
+        return result
     return app

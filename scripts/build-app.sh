@@ -25,7 +25,7 @@ import plistlib,sys
 path=sys.argv[1]
 with open(path,'rb') as f: data=plistlib.load(f)
 data['SecondBrainProjectRoot']=sys.argv[2]
-data['CFBundleShortVersionString']='0.3.0'
+data['CFBundleShortVersionString']='0.4.0'
 with open(path,'wb') as f: plistlib.dump(data,f)
 PYPLIST
 if [ -z "${SECOND_BRAIN_SIGNING_IDENTITY:-}" ]; then
