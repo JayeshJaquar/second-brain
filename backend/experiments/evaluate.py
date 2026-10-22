@@ -26,6 +26,7 @@ with tempfile.TemporaryDirectory() as temp:
   mid=str(uuid.uuid5(uuid.NAMESPACE_URL,'second-brain-fixture:'+d['id'])); ids[mid]=d['id']
   store.add(id=mid,title=d['id'],source='Synthetic corpus v1',text=d['text'],created_at=1)
  retriever=Retriever(store)
+ retriever.index_pending()
  for mode in ['lexical','dense','hybrid','rerank']:
   scores=[]; timings=[]
   for q in [q for q in data['queries'] if q['split']=='test' and q['relevant']]:

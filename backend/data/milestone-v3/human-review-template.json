@@ -1,0 +1,187 @@
+{
+  "instructions": "A separate human should review source facts and labels without relying on model outputs. Preserve the frozen dataset. Propose revisions in a new version; never overwrite the original report.",
+  "reviewer": null,
+  "reviewed_at": null,
+  "cases": [
+    {
+      "id": "dev-01",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "dev-02",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "dev-03",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "dev-04",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "dev-05",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "dev-06",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-01",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-02",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-03",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-04",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-05",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-06",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-07",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-08",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-09",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-10",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-11",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-12",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-13",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-14",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-15",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-16",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-17",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-18",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-19",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-20",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-21",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-22",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-23",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "test-24",
+      "label_accepted": null,
+      "suggested_evidence": [],
+      "notes": ""
+    }
+  ]
+}

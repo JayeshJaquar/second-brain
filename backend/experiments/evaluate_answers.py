@@ -20,7 +20,8 @@ async def main():
         s=Store(Path(temp));ids={d['id']:str(uuid.uuid5(uuid.NAMESPACE_URL,'second-brain-answers-v2:'+d['id'])) for d in data['documents']}
         reverse={v:k for k,v in ids.items()}
         for d in data['documents']:s.add(id=ids[d['id']],title=d['id'],source='Original synthetic fixture',text=d['text'],published_at=d.get('published_at'))
-        a=Assistant(s,Retriever(s),LocalLLM())
+        retriever=Retriever(s); retriever.index_pending()
+        a=Assistant(s,retriever,LocalLLM())
         for case in data['cases']:
             started=time.perf_counter()
             try:
